@@ -11,14 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ru.practicum.android.projectmonth.shopping_list_team_31_1.ui.theme.Shoppinglistteam311Theme
+import ru.practicum.android.projectmonth.shopping_list_team_31_1.ui.theme.ShoppingListTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Shoppinglistteam311Theme {
+            ShoppingListTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
@@ -41,7 +41,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Shoppinglistteam311Theme {
+    ShoppingListTheme {
         Greeting("Android")
     }
 }
