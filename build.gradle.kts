@@ -1,6 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-
 plugins {
     id("com.android.application") version "8.13.2" apply false
     id("org.jetbrains.kotlin.android") version "2.3.21" apply false
@@ -9,38 +6,22 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
 }
 
-// Функция для общих настроек
-fun Detekt.setupCommonDetektSettings() {
-    parallel = true
-    autoCorrect = false
-    disableDefaultRuleSets = false
-    buildUponDefaultConfig = true
+// Задача для форматирования через detekt плагин
+tasks.register("detektFormat") {
+    description = "Reformats whole code base using detekt"
+    group = "formatting"
 
-    setSource(files(project.projectDir))
-    include("**/*.kt", "**/*.kts")
-    exclude("**/resources/**", "**/build/**", "**/generated/**")
+    // Запускаем detekt задачу для всех подпроектов с автоисправлением
+    dependsOn(subprojects.map { "${it.path}:detekt" })
 
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        txt.required.set(true)
-        sarif.required.set(false)
+    doLast {
+        println("Detekt formatting completed. Check the modified files.")
     }
 }
 
-// Задача для проверки
-tasks.register<Detekt>("detektAll") {
-    description = "Runs over whole code base"
+// Задача для проверки всех модулей
+tasks.register("detektAll") {
+    description = "Runs detekt for all modules"
     group = "verification"
-    setupCommonDetektSettings()
-    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
-}
-
-// Задача для форматирования
-tasks.register<Detekt>("detektFormat") {
-    description = "Reformats whole code base"
-    group = "formatting"
-    setupCommonDetektSettings()
-    autoCorrect = true
-    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    dependsOn(subprojects.map { "${it.path}:detekt" })
 }
