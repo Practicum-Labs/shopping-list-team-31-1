@@ -1,4 +1,4 @@
-package ru.practicum.android.projectmonth.shopping_list_team_31_1.ui.theme
+package ru.practicum.android.projectmonth.shoppinglist.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
