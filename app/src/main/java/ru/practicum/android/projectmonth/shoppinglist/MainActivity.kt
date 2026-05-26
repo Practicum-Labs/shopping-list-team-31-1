@@ -1,4 +1,4 @@
-package ru.practicum.android.projectmonth.shopping_list_team_31_1
+package ru.practicum.android.projectmonth.shoppinglist
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
