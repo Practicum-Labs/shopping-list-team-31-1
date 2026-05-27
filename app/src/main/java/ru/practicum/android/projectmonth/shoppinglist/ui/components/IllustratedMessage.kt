@@ -19,7 +19,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 
 @Composable
 fun IllustratedMessage(
-    illustrationResId: Int,
+    imageResId: Int,
     headerResId: Int,
     messageResId: Int
 ) {
@@ -31,9 +31,10 @@ fun IllustratedMessage(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(horizontal = 44.dp)
+                .fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(id = illustrationResId),
+                painter = painterResource(id = imageResId),
                 contentDescription = null
             )
             Text(
@@ -43,7 +44,6 @@ fun IllustratedMessage(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .fillMaxWidth()
             )
             Text(
                 text = stringResource(id = messageResId),
@@ -52,7 +52,6 @@ fun IllustratedMessage(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .fillMaxWidth(),
             )
         }
     }

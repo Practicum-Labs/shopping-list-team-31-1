@@ -28,7 +28,7 @@ fun MainScreen(
         MainScreenTitle()
 
         IllustratedMessage(
-            illustrationResId = R.drawable.illustration_main_screen,
+            imageResId = R.drawable.img_main_screen,
             headerResId = R.string.main_screen_header,
             messageResId = R.string.main_screen_message
         )
