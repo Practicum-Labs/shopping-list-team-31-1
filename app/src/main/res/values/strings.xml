@@ -2,4 +2,13 @@
     <string name="app_name">shopping list</string>
     <string name="main_screen_header">Добро пожаловать в Список покупок!</string>
     <string name="main_screen_message">Создавайте списки, добавляйте товары, отмечайте, что уже куплено</string>
+
+    <string name="measure_liter">л</string>
+    <string name="measure_milliliter">мл</string>
+    <string name="measure_package">уп</string>
+    <string name="measure_pack">пач</string>
+    <string name="measure_piece">шт</string>
+    <string name="measure_kilogram">кг</string>
+    <string name="measure_gram">г</string>
+
 </resources>
