@@ -12,6 +12,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import ru.practicum.android.diploma.di.dataModule
+import ru.practicum.android.diploma.di.interactorModule
+import ru.practicum.android.diploma.di.repositoryModule
+import ru.practicum.android.diploma.di.viewModelModule
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.MainScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.ShoppingListTheme
@@ -19,6 +25,10 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.ShoppingListTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startKoin {
+            androidContext(this@MainActivity)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
         setContent {
             ShoppingListTheme {
                 val navController = rememberNavController()
@@ -51,3 +61,4 @@ fun CustomNavHost(
         }
     }
 }
+
