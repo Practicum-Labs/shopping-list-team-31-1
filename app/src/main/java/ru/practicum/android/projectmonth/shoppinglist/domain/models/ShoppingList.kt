@@ -1,8 +1,9 @@
 package ru.practicum.android.projectmonth.shoppinglist.domain.models
 
 data class ShoppingList(
-    val id: Int,
+    val id: Long,
     val name: String,
     val iconResId: Int,
-    val products: MutableList<Product>
+    val iconRes: String,
+    val products: List<Product>
 )

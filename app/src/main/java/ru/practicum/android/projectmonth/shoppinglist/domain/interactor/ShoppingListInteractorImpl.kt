@@ -1,30 +1,31 @@
 package ru.practicum.android.projectmonth.shoppinglist.domain.interactor
 
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.projectmonth.shoppinglist.domain.ShoppingListRepository
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ShoppingListInteractor
 
 class ShoppingListInteractorImpl(val repository: ShoppingListRepository): ShoppingListInteractor {
-    override suspend fun getAllShoppingLists(): List<ShoppingList> {
+    override fun getAllShoppingLists(): Flow<List<ShoppingList>> {
         return repository.getAllShoppingLists()
     }
 
-    override suspend fun getShoppingListById(id: Long): ShoppingList {
+    override fun getShoppingListById(id: Long): Flow<ShoppingList?> {
         return repository.getShoppingListById(id)
     }
 
-    override suspend fun updateShoppingList(
+    override fun updateShoppingList(
         id: Long,
         shoppingList: ShoppingList
-    ): ShoppingList {
+    ): Flow<ShoppingList> {
         return repository.updateShoppingList(id, shoppingList)
     }
 
-    override suspend fun saveNewShoppingListAndReturnId(shoppingList: ShoppingList): Long {
+    override fun saveNewShoppingListAndReturnId(shoppingList: ShoppingList): Flow<Long> {
         return repository.saveNewShoppingListAndReturnId(shoppingList)
     }
 
-    override suspend fun saveNewShoppingList(shoppingList: ShoppingList): ShoppingList {
+    override fun saveNewShoppingList(shoppingList: ShoppingList): Flow<ShoppingList> {
         return repository.saveNewShoppingList(shoppingList)
     }
 }
