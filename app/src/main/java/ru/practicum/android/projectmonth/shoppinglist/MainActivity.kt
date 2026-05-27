@@ -1,4 +1,4 @@
-package ru.practicum.android.projectmonth.shopping_list_team_31_1
+package ru.practicum.android.projectmonth.shoppinglist
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ru.practicum.android.projectmonth.shopping_list_team_31_1.ui.theme.ShoppingListTheme
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.ShoppingListTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

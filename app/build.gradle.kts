@@ -5,10 +5,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
-    namespace = "ru.practicum.android.projectmonth.shopping_list_team_31_1"
+    namespace = "ru.practicum.android.projectmonth.shoppinglist"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -44,6 +45,24 @@ android {
     }
 }
 
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    parallel = true
+    autoCorrect = true
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
+    }
+
+    exclude("**/ui/theme/Color.kt")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
@@ -51,6 +70,9 @@ kotlin {
 }
 
 dependencies {
+    // Detekt плагины нужно добавлять сюда
+    detektPlugins(libs.staticAnalysis.detektFormatting)
+
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.ui.material)
@@ -90,5 +112,4 @@ dependencies {
     implementation(libs.glide.compose)
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
-
 }

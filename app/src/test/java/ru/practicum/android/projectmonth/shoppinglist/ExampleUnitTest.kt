@@ -1,8 +1,7 @@
-package ru.practicum.android.projectmonth.shopping_list_team_31_1
+package ru.practicum.android.projectmonth.shoppinglist
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
