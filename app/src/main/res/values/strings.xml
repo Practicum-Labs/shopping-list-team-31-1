@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">shopping list</string>
+    <string name="main_screen_header">Добро пожаловать в Список покупок!</string>
+    <string name="main_screen_message">Создавайте списки, добавляйте товары, отмечайте, что уже куплено</string>
 </resources>
