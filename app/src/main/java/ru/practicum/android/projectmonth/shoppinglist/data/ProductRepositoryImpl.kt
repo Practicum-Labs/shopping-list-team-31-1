@@ -14,7 +14,8 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 class ProductRepositoryImpl(
     val appDatabase: AppDatabase,
     val productDbConverter: ProductDbConverter
-) : ProductRepository {
+): ProductRepository {
+
     override fun getAllProducts(): Flow<List<Product>> =
         appDatabase.productDao().getAll()
             .map { entities -> entities.mapNotNull { productDbConverter.map(it) } }
