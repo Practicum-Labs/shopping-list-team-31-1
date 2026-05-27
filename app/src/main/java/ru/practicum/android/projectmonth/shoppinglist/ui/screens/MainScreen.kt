@@ -28,9 +28,9 @@ fun MainScreen(
         MainScreenTitle()
 
         IllustratedMessage(
-            illustrationResourceId = R.drawable.illustration_main_screen,
-            headerResourceId = R.string.main_screen_header,
-            messageResourceId = R.string.main_screen_message
+            illustrationResId = R.drawable.illustration_main_screen,
+            headerResId = R.string.main_screen_header,
+            messageResId = R.string.main_screen_message
         )
     }
 }
@@ -55,8 +55,8 @@ fun MainScreenTitle() {
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_main_screen_title),
-            tint = DarkText,
-            contentDescription = null
+            contentDescription = null,
+            tint = DarkText
         )
     }
 }
