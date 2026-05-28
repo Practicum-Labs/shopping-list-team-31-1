@@ -19,15 +19,13 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingListsTopBar(
-    titleResId: Int,
     navController: NavController
 ) {
     TopAppBar(
         title = {
             Text(
-                text = stringResource(titleResId),
-                style = MaterialTheme.typography.headlineMedium,
-                color = DarkText
+                text = stringResource(R.string.shopping_lists_screen_title),
+                style = MaterialTheme.typography.headlineMedium
             )
         },
         actions = {
@@ -62,7 +60,6 @@ fun TopBarButton(
 @Composable
 fun ShoppingListsTopBarPreview() {
     ShoppingListsTopBar(
-        titleResId = R.string.shopping_lists_screen_title,
         navController = rememberNavController()
     )
 }

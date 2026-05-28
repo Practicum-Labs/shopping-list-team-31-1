@@ -3,6 +3,7 @@ package ru.practicum.android.projectmonth.shoppinglist.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val DarkText = Color(0xFF211A14)
+val MediumDarkText = Color(0xFF50453A)
 val LightBackground = Color(0xFFFFF8F4)
 val LightBrownSurface = Color(0xFFF4E6DA)
 val LightBrownElements = Color(0xFFFFDCBB)

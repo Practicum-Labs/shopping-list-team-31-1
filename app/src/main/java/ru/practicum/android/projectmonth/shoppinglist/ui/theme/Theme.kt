@@ -18,6 +18,7 @@ private val LightColorScheme = lightColorScheme(
     background = LightBrownSurface,
     surface = LightBrownSurface,
     onSurface = DarkText,
+    onBackground = DarkText,
     primaryContainer = LightBrownElements
 
     /* Other default colors to override

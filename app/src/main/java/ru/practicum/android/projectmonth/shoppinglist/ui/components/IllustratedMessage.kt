@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 
 @Composable
 fun IllustratedMessage(
@@ -39,7 +38,6 @@ fun IllustratedMessage(
             Text(
                 text = stringResource(id = headerResId),
                 style = MaterialTheme.typography.bodyLarge,
-                color = DarkText,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 16.dp)
@@ -47,7 +45,6 @@ fun IllustratedMessage(
             Text(
                 text = stringResource(id = messageResId),
                 style = MaterialTheme.typography.bodyMedium,
-                color = DarkText,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 16.dp)

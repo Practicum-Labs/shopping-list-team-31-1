@@ -5,6 +5,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,22 +16,26 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
+import ru.practicum.android.projectmonth.shoppinglist.ui.components.NewShoppingListDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.ShoppingListsTopBar
 
 @Composable
 fun ShoppingListsScreen(
     navController: NavController
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             ShoppingListsTopBar(
-                titleResId = R.string.shopping_lists_screen_title,
                 navController = navController
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { }
+                onClick = {
+                    showDialog = true
+                }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add),
@@ -42,6 +50,15 @@ fun ShoppingListsScreen(
             messageResId = R.string.shopping_lists_screen_message,
             modifier = Modifier.padding(innerPadding)
         )
+
+        if (showDialog) {
+            NewShoppingListDialog(
+                onDismissRequest = {
+                    showDialog = false
+                },
+                onConfirm = { }
+            )
+        }
     }
 }
 
