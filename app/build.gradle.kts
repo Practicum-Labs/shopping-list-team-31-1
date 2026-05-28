@@ -18,7 +18,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "ru.practicum.android.projectmonth.shopping_list_team_31_1"
+        applicationId = "ru.practicum.android.projectmonth.shoppinglist"
         minSdk = 33
         targetSdk = 36
         versionCode = 1

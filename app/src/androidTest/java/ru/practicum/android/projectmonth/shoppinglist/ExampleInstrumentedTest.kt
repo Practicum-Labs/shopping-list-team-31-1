@@ -20,7 +20,7 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals(
-            "ru.practicum.android.projectmonth.shopping_list_team_31_1",
+            "ru.practicum.android.projectmonth.shoppinglist",
             appContext.packageName
         )
     }
