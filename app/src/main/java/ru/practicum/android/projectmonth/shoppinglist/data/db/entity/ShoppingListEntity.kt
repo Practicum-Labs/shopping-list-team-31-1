@@ -10,9 +10,7 @@ data class ShoppingListEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val name: String,
-    @ColumnInfo("icon_res_id")
-    val iconResId: Int,
     @ColumnInfo("icon_res")
-    val iconRes: String,
+    val iconRes: String
 
 )

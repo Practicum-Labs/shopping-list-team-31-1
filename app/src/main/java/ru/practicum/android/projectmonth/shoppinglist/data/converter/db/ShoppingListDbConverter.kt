@@ -13,7 +13,6 @@ class ShoppingListDbConverter (
         return ShoppingList(
             id = shoppingListEntity.id,
             name = shoppingListEntity.name,
-            iconResId = shoppingListEntity.iconResId,
             iconRes = shoppingListEntity.iconRes,
             products = emptyList()
         )
@@ -23,7 +22,6 @@ class ShoppingListDbConverter (
         return ShoppingListEntity(
             id = shoppingList.id,
             name = shoppingList.name,
-            iconResId = shoppingList.iconResId,
             iconRes = shoppingList.iconRes
         )
     }
@@ -37,7 +35,6 @@ class ShoppingListDbConverter (
         return ShoppingList(
             id = shoppingListWithProducts.shoppingList.id,
             name = shoppingListWithProducts.shoppingList.name,
-            iconResId = shoppingListWithProducts.shoppingList.iconResId,
             iconRes = shoppingListWithProducts.shoppingList.iconRes,
             products = products
         )
