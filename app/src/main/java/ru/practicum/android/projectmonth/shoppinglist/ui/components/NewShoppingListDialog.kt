@@ -29,8 +29,7 @@ fun NewShoppingListDialog(
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_new_shopping_list),
-                contentDescription = null,
-                //tint = DarkText
+                contentDescription = null
             )
         },
         title = {

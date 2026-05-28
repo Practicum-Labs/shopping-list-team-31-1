@@ -23,7 +23,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.ShoppingList
 fun ShoppingListsScreen(
     navController: NavController
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showAddingDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -34,7 +34,7 @@ fun ShoppingListsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    showDialog = true
+                    showAddingDialog = true
                 }
             ) {
                 Icon(
@@ -51,10 +51,10 @@ fun ShoppingListsScreen(
             modifier = Modifier.padding(innerPadding)
         )
 
-        if (showDialog) {
+        if (showAddingDialog) {
             NewShoppingListDialog(
                 onDismissRequest = {
-                    showDialog = false
+                    showAddingDialog = false
                 },
                 onConfirm = { }
             )
