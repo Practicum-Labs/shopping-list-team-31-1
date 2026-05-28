@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import ru.practicum.android.diploma.di.dataModule
-import ru.practicum.android.diploma.di.interactorModule
-import ru.practicum.android.diploma.di.repositoryModule
-import ru.practicum.android.diploma.di.viewModelModule
+import ru.practicum.android.projectmonth.shoppinglist.di.dataModule
+import ru.practicum.android.projectmonth.shoppinglist.di.interactorModule
+import ru.practicum.android.projectmonth.shoppinglist.di.repositoryModule
+import ru.practicum.android.projectmonth.shoppinglist.di.viewModelModule
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.CustomNavHost
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.ShoppingListTheme
 
