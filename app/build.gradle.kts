@@ -5,8 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
-//    id("io.gitlab.arturbosch.detekt")
-    id("dev.detekt")
+    id("io.gitlab.arturbosch.detekt")
+//    id("dev.detekt")
 
 }
 

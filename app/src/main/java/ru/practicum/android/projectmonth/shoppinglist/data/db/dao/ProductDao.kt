@@ -30,9 +30,6 @@ interface ProductDao {
     @Update
     suspend fun update(product: ProductEntity): Int
 
-    @Update
-    suspend fun updateAll(product: List<ProductEntity>): Int
-
     @Query("DELETE FROM product WHERE id = :id")
     suspend fun deleteById(id: Long): Int
 
