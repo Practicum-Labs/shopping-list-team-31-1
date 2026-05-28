@@ -83,7 +83,8 @@ fun ShoppingListsScreen(
             is ShoppingListsState.Content -> {
                 ShoppingListsContent(
                     shoppingLists = uiState.data,
-                    paddingValues = innerPadding)
+                    paddingValues = innerPadding
+                )
             }
         }
 
