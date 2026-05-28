@@ -1,21 +1,38 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+
 plugins {
-    id("com.android.application") version "8.13.2" apply false
+    id("com.android.application") version "9.2.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.21" apply false
     id("com.google.devtools.ksp") version "2.3.4" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
     id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
 }
 
-// Задача для форматирования через detekt плагин
-tasks.register("detektFormat") {
-    description = "Reformats whole code base using detekt"
-    group = "formatting"
+// Применяем плагин detekt для всех подпроектов
+subprojects {
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 
-    // Запускаем detekt задачу для всех подпроектов с автоисправлением
-    dependsOn(subprojects.map { "${it.path}:detekt" })
+    configure<DetektExtension> {
+        toolVersion = "1.23.8"
+        config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+        buildUponDefaultConfig = true
 
-    doLast {
-        println("Detekt formatting completed. Check the modified files.")
+        source.setFrom(
+            fileTree(rootDir) {
+                exclude("**/*_impl.kt")
+                exclude("**/*_Impl.kt")
+                exclude("**/build/**")
+                exclude("**/generated/**")
+            }
+        )
+    }
+
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        reports {
+            html.required.set(true)
+            xml.required.set(false)
+            txt.required.set(false)
+        }
     }
 }
 

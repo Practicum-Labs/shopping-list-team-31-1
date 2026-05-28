@@ -17,9 +17,6 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_list")
     fun getAll(): Flow<List<ShoppingListEntity>>
 
-    @Query("SELECT * FROM shopping_list")
-    suspend fun getAllList(): List<ShoppingListEntity>
-
     @Query("SELECT * FROM shopping_list WHERE id = :id")
     fun getById(id: Long): Flow<ShoppingListEntity?>
 
@@ -32,9 +29,6 @@ interface ShoppingListDao {
     @Update
     suspend fun update(shoppingList: ShoppingListEntity): Int
 
-    @Update
-    suspend fun updateAll(vararg shoppingLists: ShoppingListEntity): Int
-
     @Query("DELETE FROM shopping_list WHERE id = :id")
     suspend fun deleteById(id: Long): Int
 
@@ -43,9 +37,6 @@ interface ShoppingListDao {
 
     @Delete
     suspend fun delete(shoppingList: ShoppingListEntity): Int
-
-    @Delete
-    suspend fun deleteAll(vararg shoppingLists: ShoppingListEntity): Int
 
     @Transaction
     @Query("SELECT * FROM shopping_list")

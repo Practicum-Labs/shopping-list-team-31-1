@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,7 +20,7 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals(
-            "ru.practicum.android.projectmonth.shopping_list_team_31_1",
+            "ru.practicum.android.projectmonth.shoppinglist",
             appContext.packageName
         )
     }

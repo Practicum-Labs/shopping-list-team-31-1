@@ -6,6 +6,8 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("io.gitlab.arturbosch.detekt")
+//    id("dev.detekt")
+
 }
 
 android {
@@ -17,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "ru.practicum.android.projectmonth.shopping_list_team_31_1"
+        applicationId = "ru.practicum.android.projectmonth.shoppinglist"
         minSdk = 33
         targetSdk = 36
         versionCode = 1
@@ -45,24 +47,6 @@ android {
     }
 }
 
-detekt {
-    buildUponDefaultConfig = true
-    config.setFrom("$rootDir/config/detekt/detekt.yml")
-    parallel = true
-    autoCorrect = true
-}
-
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        txt.required.set(true)
-        sarif.required.set(true)
-    }
-
-    exclude("**/ui/theme/Color.kt")
-}
-
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
@@ -70,8 +54,6 @@ kotlin {
 }
 
 dependencies {
-    // Detekt плагины нужно добавлять сюда
-    detektPlugins(libs.staticAnalysis.detektFormatting)
 
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
