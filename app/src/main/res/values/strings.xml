@@ -3,6 +3,17 @@
     <string name="main_screen_header">Добро пожаловать в Список покупок!</string>
     <string name="main_screen_message">Создавайте списки, добавляйте товары, отмечайте, что уже куплено</string>
 
+    <string name="dismiss">Отмена</string>
+
+    <string name="shopping_lists_screen_title">Мои списки</string>
+    <string name="shopping_lists_screen_header">У вас пока нет списков</string>
+    <string name="shopping_lists_screen_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
+    <string name="shopping_lists_new_title">Добавление списка</string>
+    <string name="shopping_lists_new_textfield_label">Название списка</string>
+    <string name="shopping_lists_new_textfield_hint">Новый список</string>
+    <string name="shopping_lists_new_confirm">Создать</string>
+
+
     <string name="measure_liter">л</string>
     <string name="measure_milliliter">мл</string>
     <string name="measure_package">уп</string>

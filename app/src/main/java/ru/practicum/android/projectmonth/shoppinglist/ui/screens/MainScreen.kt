@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,18 +14,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
+import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 
 @Composable
 fun MainScreen(
-    navController: NavHostController
+    navController: NavController
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            // Временная логика для проверки
+            .clickable {
+                navController.navigate(Destination.ShoppingLists.route)
+            }
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         MainScreenTitle()
 
         IllustratedMessage(
@@ -35,11 +45,8 @@ fun MainScreen(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun MainScreenTitle() {
-
-    Spacer(modifier = Modifier.height(16.dp))
 
     Row(
         modifier = Modifier
@@ -59,4 +66,10 @@ fun MainScreenTitle() {
             tint = DarkText
         )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun MainScreenPreview() {
+    MainScreen(navController = rememberNavController())
 }
