@@ -112,6 +112,8 @@ complexity:
   LongMethod:
     active: true
     allowedLines: 60
+    excludes:
+      - '**/generated/**'
   LongParameterList:
     active: true
     allowedFunctionParameters: 5
@@ -150,7 +152,7 @@ complexity:
     ignoreStringsRegex: '$^'
   TooManyFunctions:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**']
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', '**/generated/**']
     allowedFunctionsPerFile: 11
     allowedFunctionsPerClass: 11
     allowedFunctionsPerInterface: 11
@@ -161,6 +163,7 @@ complexity:
     ignoreInternal: false
     ignoreOverridden: false
     ignoreAnnotatedFunctions: []
+
 
 coroutines:
   active: true
@@ -207,7 +210,7 @@ empty-blocks:
     active: true
   EmptyFunctionBlock:
     active: true
-    ignoreOverridden: false
+    ignoreOverridden: true
   EmptyIfBlock:
     active: true
   EmptyInitBlock:
@@ -305,11 +308,15 @@ naming:
     active: true
     aliases: ['ClassName']
     classPattern: '[A-Z][a-zA-Z0-9]*'
+    excludes:
+      - '**/generated/**'
   ConstructorParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
     privateParameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
+    excludes:
+      - '**/generated/**'
   EnumNaming:
     active: true
     aliases: ['EnumEntryName']
@@ -328,7 +335,7 @@ naming:
   FunctionNaming:
     active: true
     aliases: ['FunctionName']
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**']
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', '**/generated/**']
     functionPattern: '[a-z][a-zA-Z0-9]*'
     excludeClassPattern: '$^'
     ignoreAnnotated: ['Composable']
@@ -336,6 +343,8 @@ naming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
+    excludes:
+      - '**/generated/**'
   InvalidPackageDeclaration:
     active: true
     aliases: ['PackageDirectoryMismatch']
@@ -392,6 +401,8 @@ naming:
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
+    excludes:
+      - '**/generated/**'
 
 performance:
   active: true
@@ -669,7 +680,7 @@ style:
     maxJumpCount: 1
   MagicNumber:
     active: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', '**/*.kts']
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', '**/*.kts', '**/generated/**']
     ignoreNumbers:
       - '-1'
       - '0'
@@ -697,6 +708,8 @@ style:
     excludeImportStatements: true
     excludeCommentStatements: false
     excludeRawStrings: true
+    excludes:
+      - '**/generated/**'
   MayBeConstant:
     active: true
   ModifierOrder:
@@ -743,6 +756,8 @@ style:
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: false
+    excludes:
+      - '**/generated/**'
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:

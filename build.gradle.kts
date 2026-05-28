@@ -1,7 +1,7 @@
 import dev.detekt.gradle.Detekt
 
 plugins {
-    id("com.android.application") version "8.13.2" apply false
+    id("com.android.application") version "9.2.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.21" apply false
     id("com.google.devtools.ksp") version "2.3.4" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
@@ -14,6 +14,17 @@ detekt {
     toolVersion = "2.0.0-alpha.3"
     config.setFrom(files("config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
+
+    source.setFrom(
+        fileTree(rootDir) {
+//            include("**/*.kt")
+            exclude("**/*_impl.kt")
+            exclude("**/*_Impl.kt")
+            exclude("**/build/**")
+            exclude("**/generated/**")
+        }
+    )
+
 }
 
 tasks.withType<Detekt>().configureEach {
