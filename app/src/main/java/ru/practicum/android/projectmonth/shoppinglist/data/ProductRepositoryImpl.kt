@@ -14,22 +14,24 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 class ProductRepositoryImpl(
     val appDatabase: AppDatabase,
     val productDbConverter: ProductDbConverter
-): ProductRepository {
+) : ProductRepository {
 
     override fun getAllProducts(): Flow<List<Product>> =
         appDatabase.productDao().getAll()
             .map { entities -> entities.mapNotNull { productDbConverter.map(it) } }
 
 
-    override fun getProductById(id: Long): Flow<Product?> =
-        appDatabase.productDao().getById(id).map { productDbConverter.map(it) }
+    override fun getProductById(id: Long): Flow<Product?> = flow {
+        emitAll(appDatabase.productDao().getById(id).map { productDbConverter.map(it) })
+    }
 
     override fun updateProduct(
         id: Long,
         product: Product
     ): Flow<Product> = flow {
         appDatabase.productDao().update(productDbConverter.map(product))
-        emit(appDatabase.productDao().getById(product.id)
+        emit(
+            appDatabase.productDao().getById(product.id)
             .mapNotNull { productDbConverter.map(it) }
             .first())
     }

@@ -12,28 +12,21 @@ import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductEnti
 @Dao
 interface ProductDao {
 
-    // Вывод всего
     @Query("SELECT * FROM product")
     fun getAll(): Flow<List<ProductEntity>>
 
     @Query("SELECT * FROM product")
     suspend fun getAllList(): List<ProductEntity>
 
-    // Вывод всех продуктов для конкретного списка покупок
     @Query("SELECT * FROM product WHERE shopping_list_id = :shoppingListId")
     fun getProductsByShoppingListId(shoppingListId: Long): Flow<List<ProductEntity>>
 
     @Query("SELECT * FROM product WHERE shopping_list_id = :shoppingListId")
     suspend fun getProductsByShoppingListIdSuspend(shoppingListId: Long): List<ProductEntity>
 
-    // Вывод по id
     @Query("SELECT * FROM product WHERE id = :id")
-    fun getById(id: Long): Flow<ProductEntity?>
+    suspend fun getById(id: Long): Flow<ProductEntity?>
 
-    @Query("SELECT * FROM product WHERE id = :id")
-    suspend fun getByIdSuspend(id: Long): ProductEntity?
-
-    // Добавление
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(product: ProductEntity): Long
 
@@ -43,7 +36,6 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(product: List<ProductEntity>): List<Long>
 
-    // Изменение
     @Update
     suspend fun update(product: ProductEntity): Int
 
@@ -53,19 +45,15 @@ interface ProductDao {
     @Update
     suspend fun updateAll(product: List<ProductEntity>): Int
 
-    // Удаление по id
     @Query("DELETE FROM product WHERE id = :id")
     suspend fun deleteById(id: Long): Int
 
-    // Удаление всех продуктов конкретного списка
     @Query("DELETE FROM product WHERE shopping_list_id = :shoppingListId")
     suspend fun deleteByShoppingListId(shoppingListId: Long): Int
 
-    // Удаление всего
     @Query("DELETE FROM product")
     suspend fun deleteAll(): Int
 
-    // Удаление объекта целиком
     @Delete
     suspend fun delete(product: ProductEntity): Int
 
