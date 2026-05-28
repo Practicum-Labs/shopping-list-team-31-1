@@ -15,14 +15,8 @@ interface ProductDao {
     @Query("SELECT * FROM product")
     fun getAll(): Flow<List<ProductEntity>>
 
-    @Query("SELECT * FROM product")
-    suspend fun getAllList(): List<ProductEntity>
-
     @Query("SELECT * FROM product WHERE shopping_list_id = :shoppingListId")
     fun getProductsByShoppingListId(shoppingListId: Long): Flow<List<ProductEntity>>
-
-    @Query("SELECT * FROM product WHERE shopping_list_id = :shoppingListId")
-    suspend fun getProductsByShoppingListIdSuspend(shoppingListId: Long): List<ProductEntity>
 
     @Query("SELECT * FROM product WHERE id = :id")
     fun getById(id: Long): Flow<ProductEntity?>
@@ -31,16 +25,10 @@ interface ProductDao {
     suspend fun insert(product: ProductEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg product: ProductEntity): List<Long>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(product: List<ProductEntity>): List<Long>
 
     @Update
     suspend fun update(product: ProductEntity): Int
-
-    @Update
-    suspend fun updateAll(vararg product: ProductEntity): Int
 
     @Update
     suspend fun updateAll(product: List<ProductEntity>): Int
@@ -57,9 +45,4 @@ interface ProductDao {
     @Delete
     suspend fun delete(product: ProductEntity): Int
 
-    @Delete
-    suspend fun deleteAll(vararg product: ProductEntity): Int
-
-    @Delete
-    suspend fun deleteAll(product: List<ProductEntity>): Int
 }

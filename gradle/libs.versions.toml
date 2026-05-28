@@ -34,9 +34,6 @@ glideVersion = '5.0.7'
 runtimeLivedata = "1.11.0"
 androidsvg = "1.4"
 
-[plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-detektTwitterComposeRules = { id = "com.twitter.compose.rules", version.ref = "detektTwitterComposeRules" }
 
 [libraries]
 
