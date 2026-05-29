@@ -1,5 +1,7 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.components
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +19,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun IllustratedMessage(
-    imageResId: Int,
-    headerResId: Int,
-    messageResId: Int,
+    @DrawableRes imageResId: Int,
+    @StringRes headerResId: Int,
+    @StringRes messageResId: Int,
     modifier: Modifier = Modifier
 ) {
     Box(

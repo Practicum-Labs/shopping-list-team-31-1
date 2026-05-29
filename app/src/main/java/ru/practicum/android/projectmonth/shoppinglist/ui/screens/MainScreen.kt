@@ -28,7 +28,7 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // Временная логика для проверки
+            // TODO: Можно также добавить переход по таймеру через пару секунд после отрисовки экрана
             .clickable {
                 navController.navigate(Destination.ShoppingLists.route)
             }
