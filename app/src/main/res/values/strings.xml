@@ -13,6 +13,10 @@
     <string name="shopping_lists_new_textfield_hint">Новый список</string>
     <string name="shopping_lists_new_confirm">Создать</string>
 
+    <string name="products_screen_title">Продукты</string>
+    <string name="products_screen_header">В списке покупок пока пусто</string>
+    <string name="products_screen_message">Нажмите на кнопку + ниже,\nчтобы добавить товары</string>
+
 
     <string name="measure_liter">л</string>
     <string name="measure_milliliter">мл</string>
