@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,36 +22,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
-// Если эти цвета пригодятся где-то ещё - вынести в тему, пока нет
+// Используется только здесь, нет необходимости выносить в тему
 val measureUnitsDropdownColor = Color(0xFFFAEBE0)
-val disabledMinusButtonColor = Color(0xFFE4D7CD)
-val disabledMinusIconColor = Color(0xFF9C8E81)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductBottomSheet(
-    onItemAdded: (name: String, number: String, unit: String) -> Unit
+    onValuesChanged: (productName: String, number: String, measureUnit: String) -> Unit
 ) {
     val measureUnits = stringArrayResource(R.array.measure_units)
 
     var productName by remember { mutableStateOf("") }
     var number by remember { mutableStateOf("") }
-    var selectedUnit by remember { mutableStateOf(measureUnits.first()) }
+    var selectedUnit by remember { mutableStateOf("") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
-    var currentNumber = number.toFloatOrNull() ?: 0f
-    var minusButtonEnabled = currentNumber >= 1
+    val currentNumber = number.toFloatOrNull() ?: 0f
+    val minusButtonEnabled = currentNumber >= 1
 
     Surface(
         color = BottomSheetPeach,
@@ -71,7 +65,10 @@ fun AddProductBottomSheet(
             // Поле ввода названия товара
             CustomTextInput(
                 value = productName,
-                onValueChange = { productName = it },
+                onValueChange = {
+                    productName = it
+                    onValuesChanged(productName, number, selectedUnit)
+                },
                 labelResId = R.string.products_new_textfield_label,
                 placeholderResId = R.string.products_new_textfield_placeholder,
                 modifier = Modifier.fillMaxWidth()
@@ -86,7 +83,10 @@ fun AddProductBottomSheet(
                 // Поле ввода количества
                 CustomTextInput(
                     value = number,
-                    onValueChange = { number = it },
+                    onValueChange = {
+                        number = it
+                        onValuesChanged(productName, number, selectedUnit)
+                    },
                     labelResId = R.string.products_new_textfield_number,
                     placeholderResId = R.string.products_new_textfield_number,
                     modifier = Modifier.weight(1f),
@@ -102,9 +102,19 @@ fun AddProductBottomSheet(
                 ) {
                     OutlinedTextField(
                         value = selectedUnit,
-                        onValueChange = {},
+                        onValueChange = {
+                            onValuesChanged(productName, number, selectedUnit)
+                        },
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.measure_placeholder),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = MediumDarkText
+                            )
+                        },
                         modifier = Modifier.menuAnchor(
                             type = ExposedDropdownMenuAnchorType.PrimaryNotEditable
                         )
@@ -127,41 +137,21 @@ fun AddProductBottomSheet(
                 }
 
                 // Кнопка минус
-                IconButton(
+                RoundIconButton(
                     onClick = {
-                        number = (currentNumber - 1).toString()
+                        number = trimInteger(currentNumber - 1)
                     },
-                    enabled = minusButtonEnabled,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = LightBrownElements,
-                        contentColor = DarkText,
-                        disabledContainerColor = disabledMinusButtonColor,
-                        disabledContentColor = disabledMinusIconColor
-                    ),
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painterResource(R.drawable.ic_remove),
-                        contentDescription = null
-                    )
-                }
+                    iconResId = R.drawable.ic_remove,
+                    enabled = minusButtonEnabled
+                )
 
                 // Кнопка плюс
-                IconButton(
+                RoundIconButton(
                     onClick = {
-                        number = (currentNumber + 1).toString()
+                        number = trimInteger(currentNumber + 1)
                     },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = LightBrownElements,
-                        contentColor = DarkText
-                    ),
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painterResource(R.drawable.ic_add),
-                        contentDescription = null
-                    )
-                }
+                    iconResId = R.drawable.ic_add
+                )
             }
         }
     }
@@ -172,6 +162,11 @@ fun AddProductBottomSheet(
 @Composable
 fun AddProductBottomSheetPreview() {
     AddProductBottomSheet(
-        onItemAdded = { name, number, unit -> { } }
+        onValuesChanged = { name, number, unit -> { } }
     )
+}
+
+// Обрезать .0 для целого количества товаров
+private fun trimInteger(digit: Float): String {
+    return if (digit % 1.0 == 0.0) digit.toInt().toString() else digit.toString()
 }

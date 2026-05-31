@@ -21,6 +21,7 @@
     <string name="products_new_textfield_placeholder">Добавить новый товар</string>
     <string name="products_new_textfield_number">Количество</string>
 
+    <string name="measure_placeholder">Единицы</string>
 
     <string name="measure_liter">л</string>
     <string name="measure_milliliter">мл</string>

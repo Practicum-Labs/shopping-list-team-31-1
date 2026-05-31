@@ -93,6 +93,7 @@ fun ProductsScreen(
                             .width(topBarSize.width.dp)
                             .height(topBarSize.height.dp)
                             .background(Color.Black.copy(alpha = backgroundAlfa * 0.6f))
+                            // Обработка кликов по фону при открытом диалоге
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
                                     scope.launch { scaffoldState.bottomSheetState.hide() }
@@ -103,7 +104,7 @@ fun ProductsScreen(
             },
             sheetContent = {
                 AddProductBottomSheet(
-                    onItemAdded = { name, number, unit -> { } }
+                    onValuesChanged = { name, number, unit -> { } }
                 )
             },
             scaffoldState = scaffoldState,
@@ -124,7 +125,6 @@ fun ProductsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = backgroundAlfa * 0.6f))
-                        // Обработка кликов по фону при открытом диалоге
                         .pointerInput(Unit) {
                             detectTapGestures(onTap = {
                                 scope.launch { scaffoldState.bottomSheetState.hide() }
