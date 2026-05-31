@@ -3,7 +3,6 @@ package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,8 +14,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.projectmonth.shoppinglist.R
+import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownSurface
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
 @Composable
 fun NewShoppingListDialog(
@@ -39,19 +38,11 @@ fun NewShoppingListDialog(
             )
         },
         text = {
-            OutlinedTextField(
+            CustomTextInput(
                 value = newShoppingListName,
                 onValueChange = { newShoppingListName = it },
-                label = {
-                    Text(stringResource(R.string.shopping_lists_new_textfield_label))
-                },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.shopping_lists_new_textfield_hint),
-                        color = MediumDarkText
-                    )
-                },
-                singleLine = true
+                labelResId = R.string.shopping_lists_new_textfield_label,
+                placeholderResId = R.string.shopping_lists_new_textfield_placeholder
             )
         },
         onDismissRequest = onDismissRequest,
