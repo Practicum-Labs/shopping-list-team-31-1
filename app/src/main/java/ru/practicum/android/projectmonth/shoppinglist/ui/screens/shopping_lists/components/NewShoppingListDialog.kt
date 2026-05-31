@@ -1,4 +1,4 @@
-package ru.practicum.android.projectmonth.shoppinglist.ui.components
+package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon

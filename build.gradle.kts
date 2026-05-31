@@ -17,14 +17,7 @@ subprojects {
         config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
         buildUponDefaultConfig = true
 
-        source.setFrom(
-            fileTree(rootDir) {
-                exclude("**/*_impl.kt")
-                exclude("**/*_Impl.kt")
-                exclude("**/build/**")
-                exclude("**/generated/**")
-            }
-        )
+        source.from(files("${projectDir}/src/main/java"))
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {

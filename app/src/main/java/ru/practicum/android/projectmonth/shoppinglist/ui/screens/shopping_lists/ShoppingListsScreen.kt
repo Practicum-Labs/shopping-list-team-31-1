@@ -1,6 +1,7 @@
-package ru.practicum.android.projectmonth.shoppinglist.ui.screens
+package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,11 +34,13 @@ import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ShoppingListsViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
-import ru.practicum.android.projectmonth.shoppinglist.ui.components.NewShoppingListDialog
-import ru.practicum.android.projectmonth.shoppinglist.ui.components.ShoppingListsTopBar
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.dp
+import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ShoppingListsState
+import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.NewShoppingListDialog
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.ShoppingListsTopBar
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
@@ -58,16 +60,11 @@ fun ShoppingListsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            CustomFab(
                 onClick = {
                     showAddingDialog = true
                 }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_add),
-                    contentDescription = null
-                )
-            }
+            )
         }
     ) { innerPadding ->
 
@@ -83,7 +80,10 @@ fun ShoppingListsScreen(
             is ShoppingListsState.Content -> {
                 ShoppingListsContent(
                     shoppingLists = uiState.data,
-                    paddingValues = innerPadding
+                    paddingValues = innerPadding,
+                    onItemClick = { shoppingList ->
+                        navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                    }
                 )
             }
         }
@@ -107,7 +107,8 @@ fun ShoppingListsScreen(
 @Composable
 fun ShoppingListsContent(
     shoppingLists: List<ShoppingList>,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onItemClick: (ShoppingList) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -120,18 +121,24 @@ fun ShoppingListsContent(
             count = shoppingLists.size,
             key = { index -> shoppingLists[index].id }
         ) { index ->
-            ShoppingListsItem(item = shoppingLists[index])
+            ShoppingListsItem(
+                item = shoppingLists[index],
+                onClick = onItemClick
+            )
         }
     }
 }
 
 @Composable
-fun ShoppingListsItem(item: ShoppingList) {
+fun ShoppingListsItem(
+    item: ShoppingList,
+    onClick: (ShoppingList) -> Unit
+) {
 
     val context = LocalContext.current
     val resources = LocalResources.current
 
-    // Плохая практика, нужно будет написать специальный класс для получения id ресурса по ключу
+    // TODO: Плохая практика, нужно будет написать специальный класс для получения id ресурса по ключу
     val iconResId = remember(resources, item.iconRes) {
         resources.getIdentifier(
             item.iconRes,
@@ -152,7 +159,10 @@ fun ShoppingListsItem(item: ShoppingList) {
                 color = LightBackground,
                 shape = RoundedCornerShape(16.dp)
             )
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+                onClick(item)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
