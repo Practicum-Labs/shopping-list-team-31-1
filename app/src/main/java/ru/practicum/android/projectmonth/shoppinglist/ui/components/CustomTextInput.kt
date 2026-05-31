@@ -17,7 +17,7 @@ fun CustomTextInput(
     @StringRes labelResId: Int,
     @StringRes placeholderResId: Int,
     modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Unspecified),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Unspecified)
 ) {
     OutlinedTextField(
         value = value,
