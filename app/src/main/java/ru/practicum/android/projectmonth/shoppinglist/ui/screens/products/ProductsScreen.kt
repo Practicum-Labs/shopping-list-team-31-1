@@ -104,7 +104,7 @@ fun ProductsScreen(
             },
             sheetContent = {
                 AddProductBottomSheet(
-                    onValuesChanged = { name, number, unit -> { } }
+                    onValuesChange = { name, number, unit -> { } }
                 )
             },
             scaffoldState = scaffoldState,

@@ -39,7 +39,7 @@ val measureUnitsDropdownColor = Color(0xFFFAEBE0)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductBottomSheet(
-    onValuesChanged: (productName: String, number: String, measureUnit: String) -> Unit
+    onValuesChange: (productName: String, number: String, measureUnit: String) -> Unit
 ) {
     val measureUnits = stringArrayResource(R.array.measure_units)
 
@@ -67,7 +67,7 @@ fun AddProductBottomSheet(
                 value = productName,
                 onValueChange = {
                     productName = it
-                    onValuesChanged(productName, number, selectedUnit)
+                    onValuesChange(productName, number, selectedUnit)
                 },
                 labelResId = R.string.products_new_textfield_label,
                 placeholderResId = R.string.products_new_textfield_placeholder,
@@ -85,7 +85,7 @@ fun AddProductBottomSheet(
                     value = number,
                     onValueChange = {
                         number = it
-                        onValuesChanged(productName, number, selectedUnit)
+                        onValuesChange(productName, number, selectedUnit)
                     },
                     labelResId = R.string.products_new_textfield_number,
                     placeholderResId = R.string.products_new_textfield_number,
@@ -103,7 +103,7 @@ fun AddProductBottomSheet(
                     OutlinedTextField(
                         value = selectedUnit,
                         onValueChange = {
-                            onValuesChanged(productName, number, selectedUnit)
+                            onValuesChange(productName, number, selectedUnit)
                         },
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
@@ -162,7 +162,7 @@ fun AddProductBottomSheet(
 @Composable
 fun AddProductBottomSheetPreview() {
     AddProductBottomSheet(
-        onValuesChanged = { name, number, unit -> { } }
+        onValuesChange = { name, number, unit -> { } }
     )
 }
 
