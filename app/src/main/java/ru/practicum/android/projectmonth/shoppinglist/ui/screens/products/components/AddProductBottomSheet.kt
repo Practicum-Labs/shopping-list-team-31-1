@@ -1,19 +1,22 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,11 +33,12 @@ fun AddProductBottomSheet(
     val measureUnits = stringArrayResource(R.array.measure_units)
 
     var currentNumber = number.toFloatOrNull() ?: 0f
-    var minusButtonEnabled = currentNumber > 1
+    var minusButtonEnabled = currentNumber >= 1
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
+        containerColor = BottomSheetPeach,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -56,7 +60,7 @@ fun AddProductBottomSheet(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Bottom
             ) {
                 // Поле ввода количества
                 CustomTextInput(
@@ -72,7 +76,8 @@ fun AddProductBottomSheet(
                 ExposedDropdownMenuBox(
                     expanded = isDropdownExpanded,
                     onExpandedChange = { isDropdownExpanded = !isDropdownExpanded },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                 ) {
                     OutlinedTextField(
                         value = selectedUnit,
@@ -81,8 +86,7 @@ fun AddProductBottomSheet(
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
                         modifier = Modifier.menuAnchor(
                             type = ExposedDropdownMenuAnchorType.PrimaryNotEditable
-                        ),
-                        shape = RoundedCornerShape(8.dp),
+                        )
                     )
                     ExposedDropdownMenu(
                         expanded = isDropdownExpanded,
@@ -107,28 +111,34 @@ fun AddProductBottomSheet(
                     },
                     enabled = minusButtonEnabled,
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.LightGray.copy(alpha = 0.4f)
+                        containerColor = LightBrownElements,
+                        contentColor = DarkText,
+                        disabledContainerColor = Color(0xFFE4D7CD),
+                        disabledContentColor = Color(0xFF9C8E81)
                     ),
                     modifier = Modifier.size(48.dp)
                 ) {
-                    Text("—", style = MaterialTheme.typography.titleMedium)
+                    Icon(
+                        painterResource(R.drawable.ic_remove),
+                        contentDescription = null
+                    )
                 }
 
                 // Кнопка плюс (добавление)
                 IconButton(
                     onClick = {
-                        if (productName.isNotBlank()) {
-                            onItemAdded(productName, number, selectedUnit)
-                            productName = ""
-                            number = ""
-                        }
+                        number = (currentNumber + 1).toString()
                     },
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.LightGray.copy(alpha = 0.4f)
+                        containerColor = LightBrownElements,
+                        contentColor = DarkText
                     ),
                     modifier = Modifier.size(48.dp)
                 ) {
-                    Text("+", style = MaterialTheme.typography.titleLarge)
+                    Icon(
+                        painterResource(R.drawable.ic_add),
+                        contentDescription = null
+                    )
                 }
             }
         }
