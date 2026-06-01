@@ -4,16 +4,19 @@ import androidx.annotation.DrawableRes
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import ru.practicum.android.projectmonth.shoppinglist.R
 
 @Composable
 fun CustomFab(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = { },
     @DrawableRes iconResId: Int = R.drawable.ic_add
 ) {
     FloatingActionButton(
-        onClick = onClick
+        onClick = onClick,
+        modifier = modifier
     ) {
         Icon(
             painter = painterResource(iconResId),
