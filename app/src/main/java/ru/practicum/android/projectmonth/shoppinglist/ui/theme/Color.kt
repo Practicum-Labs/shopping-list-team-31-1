@@ -7,6 +7,7 @@ val MediumDarkText = Color(0xFF50453A)
 val LightBackground = Color(0xFFFFF8F4)
 val LightBrownSurface = Color(0xFFF4E6DA)
 val LightBrownElements = Color(0xFFFFDCBB)
+val BottomSheetPeach = Color(0xFFFFF1E7)
 val RegularBrown = Color(0xFF845416)
 
 

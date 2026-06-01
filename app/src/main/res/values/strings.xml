@@ -10,13 +10,18 @@
     <string name="shopping_lists_screen_message">Нажмите на кнопку + ниже, чтобы создать свой первый список</string>
     <string name="shopping_lists_new_title">Добавление списка</string>
     <string name="shopping_lists_new_textfield_label">Название списка</string>
-    <string name="shopping_lists_new_textfield_hint">Новый список</string>
+    <string name="shopping_lists_new_textfield_placeholder">Новый список</string>
     <string name="shopping_lists_new_confirm">Создать</string>
 
     <string name="products_screen_title">Продукты</string>
     <string name="products_screen_header">В списке покупок пока пусто</string>
     <string name="products_screen_message">Нажмите на кнопку + ниже,\nчтобы добавить товары</string>
 
+    <string name="products_new_textfield_label">Товар</string>
+    <string name="products_new_textfield_placeholder">Добавить новый товар</string>
+    <string name="products_new_textfield_number">Количество</string>
+
+    <string name="measure_placeholder">Единицы</string>
 
     <string name="measure_liter">л</string>
     <string name="measure_milliliter">мл</string>
@@ -37,5 +42,14 @@
     <string name="list_name_label">Название списка</string>
     <string name="list_name_hint">Введите название</string>
     <string name="rename">Переименовать</string>
+    <string-array name="measure_units">
+        <item>л</item>
+        <item>мл</item>
+        <item>уп</item>
+        <item>пач</item>
+        <item>шт</item>
+        <item>кг</item>
+        <item>г</item>
+    </string-array>
 
 </resources>
