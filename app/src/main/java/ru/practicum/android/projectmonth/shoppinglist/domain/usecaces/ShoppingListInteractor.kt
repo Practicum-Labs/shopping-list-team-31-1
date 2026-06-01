@@ -10,5 +10,6 @@ interface ShoppingListInteractor {
     fun updateShoppingList(id: Long, shoppingList: ShoppingList): Flow<ShoppingList>
     fun saveNewShoppingListAndReturnId(shoppingList: ShoppingList): Flow<Long>
     fun saveNewShoppingList(shoppingList: ShoppingList): Flow<ShoppingList>
-
+    suspend fun deleteShoppingList(shoppingList: ShoppingList)
+    suspend fun deleteAllShoppingLists()
 }
