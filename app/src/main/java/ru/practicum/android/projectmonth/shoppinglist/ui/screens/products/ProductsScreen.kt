@@ -65,7 +65,6 @@ fun ProductsScreen(
     // Размеры верхней панели для отдельного затемнения
     var topBarSize by remember { mutableStateOf(IntSize.Zero) }
 
-
     // Смещение кнопки вверх при открытии диалога
     val fabOffset by remember(isBottomSheetVisible) {
         derivedStateOf {
