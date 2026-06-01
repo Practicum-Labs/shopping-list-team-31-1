@@ -48,4 +48,11 @@ class ShoppingListRepositoryImpl(
         )
     }
 
+    override suspend fun deleteShoppingList(shoppingList: ShoppingList) {
+        appDatabase.shoppingListDao().deleteById(shoppingList.id)
+    }
+
+    override suspend fun deleteAllShoppingLists() {
+        appDatabase.shoppingListDao().deleteAll()
+    }
 }

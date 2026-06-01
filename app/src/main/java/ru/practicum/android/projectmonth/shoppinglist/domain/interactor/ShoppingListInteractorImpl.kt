@@ -28,4 +28,11 @@ class ShoppingListInteractorImpl(val repository: ShoppingListRepository): Shoppi
     override fun saveNewShoppingList(shoppingList: ShoppingList): Flow<ShoppingList> {
         return repository.saveNewShoppingList(shoppingList)
     }
+    override suspend fun deleteShoppingList(shoppingList: ShoppingList) {
+        repository.deleteShoppingList(shoppingList)
+    }
+
+    override suspend fun deleteAllShoppingLists() {
+        repository.deleteAllShoppingLists()
+    }
 }

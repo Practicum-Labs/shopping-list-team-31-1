@@ -28,19 +28,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.practicum.android.projectmonth.shoppinglist.R
-import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
-import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ShoppingListsViewModel
-import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
-import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ShoppingListsState
+import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ShoppingListsViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
+import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteAllListsDialog
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteListDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.NewShoppingListDialog
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.RenameShoppingListDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.ShoppingListsTopBar
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.SwipeableShoppingListItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
@@ -52,11 +56,19 @@ fun ShoppingListsScreen(
 ) {
     val uiState = viewModel.uiState
     var showAddingDialog by remember { mutableStateOf(false) }
+    var showDeleteAllDialog by remember { mutableStateOf(false) }
+    var showDeleteListDialog by remember { mutableStateOf<ShoppingList?>(null) }
+    var showRenameDialog by remember { mutableStateOf<ShoppingList?>(null) }
 
     Scaffold(
         topBar = {
             ShoppingListsTopBar(
-                navController = navController
+                navController = navController,
+                onDeleteAllClick = {
+                    if ((uiState as? ShoppingListsState.Content)?.data?.isNotEmpty() == true) {
+                        showDeleteAllDialog = true
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -78,52 +90,86 @@ fun ShoppingListsScreen(
                 )
             }
             is ShoppingListsState.Content -> {
-                ShoppingListsContent(
-                    shoppingLists = uiState.data,
-                    paddingValues = innerPadding,
-                    onItemClick = { shoppingList ->
-                        navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = innerPadding
+                ) {
+                    items(
+                        count = uiState.data.size,
+                        key = { index -> uiState.data[index].id }
+                    ) { index ->
+                        SwipeableShoppingListItem(
+                            item = uiState.data[index],
+                            onItemClick = { shoppingList ->
+                                navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                            },
+                            onDelete = { shoppingList ->
+                                showDeleteListDialog = shoppingList
+                            },
+                            onRename = { shoppingList ->
+                                showRenameDialog = shoppingList
+                            },
+                            onCopy = { shoppingList ->
+                                // Заглушка - Toast показывается внутри SwipeableShoppingListItem
+                            }
+                        )
                     }
-                )
+                }
             }
         }
 
+        // Диалог создания нового списка
         if (showAddingDialog) {
             NewShoppingListDialog(
                 onDismissRequest = {
                     showAddingDialog = false
                 },
                 onConfirm = { newShoppingListName ->
-                    viewModel.newShoppingList(
-                        name = newShoppingListName
-                    )
+                    if (newShoppingListName.isNotBlank()) {
+                        viewModel.newShoppingList(name = newShoppingListName)
+                    }
                     showAddingDialog = false
                 }
             )
         }
-    }
-}
 
-@Composable
-fun ShoppingListsContent(
-    shoppingLists: List<ShoppingList>,
-    paddingValues: PaddingValues,
-    onItemClick: (ShoppingList) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = paddingValues
-    ) {
-        items(
-            count = shoppingLists.size,
-            key = { index -> shoppingLists[index].id }
-        ) { index ->
-            ShoppingListsItem(
-                item = shoppingLists[index],
-                onClick = onItemClick
+        // Диалог удаления всех списков
+        if (showDeleteAllDialog) {
+            DeleteAllListsDialog(
+                onDismiss = { showDeleteAllDialog = false },
+                onConfirm = {
+                    viewModel.deleteAllShoppingLists()
+                    showDeleteAllDialog = false
+                }
+            )
+        }
+
+        // Диалог удаления конкретного списка
+        showDeleteListDialog?.let { shoppingList ->
+            DeleteListDialog(
+                listName = shoppingList.name,
+                onDismiss = { showDeleteListDialog = null },
+                onConfirm = {
+                    viewModel.deleteShoppingList(shoppingList)
+                    showDeleteListDialog = null
+                }
+            )
+        }
+
+        // Диалог переименования списка
+        showRenameDialog?.let { shoppingList ->
+            RenameShoppingListDialog(
+                shoppingList = shoppingList,
+                onDismiss = { showRenameDialog = null },
+                onConfirm = { newName ->
+                    if (newName.isNotBlank() && newName != shoppingList.name) {
+                        viewModel.updateShoppingList(shoppingList, newName)
+                    }
+                    showRenameDialog = null
+                }
             )
         }
     }
@@ -132,13 +178,12 @@ fun ShoppingListsContent(
 @Composable
 fun ShoppingListsItem(
     item: ShoppingList,
-    onClick: (ShoppingList) -> Unit
+    onClick: (ShoppingList) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
     val context = LocalContext.current
     val resources = LocalResources.current
 
-    // TODO: Плохая практика, нужно будет написать специальный класс для получения id ресурса по ключу
     val iconResId = remember(resources, item.iconRes) {
         resources.getIdentifier(
             item.iconRes,
@@ -148,7 +193,7 @@ fun ShoppingListsItem(
     }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .shadow(
                 elevation = 2.dp,

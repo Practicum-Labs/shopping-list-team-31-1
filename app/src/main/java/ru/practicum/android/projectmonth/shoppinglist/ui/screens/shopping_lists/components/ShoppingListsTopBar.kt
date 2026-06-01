@@ -16,7 +16,8 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.TopBarButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingListsTopBar(
-    navController: NavController
+    navController: NavController,
+    onDeleteAllClick: () -> Unit = {}
 ) {
     TopAppBar(
         title = {
@@ -27,7 +28,9 @@ fun ShoppingListsTopBar(
         },
         actions = {
             TopBarButton(R.drawable.ic_search)
-            TopBarButton(R.drawable.ic_delete)
+            TopBarButton(R.drawable.ic_delete,
+                onClick = onDeleteAllClick
+            )
             TopBarButton(R.drawable.ic_night_theme, enabled = false)
 
         },

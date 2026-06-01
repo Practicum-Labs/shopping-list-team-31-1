@@ -26,4 +26,16 @@
     <string name="measure_kilogram">кг</string>
     <string name="measure_gram">г</string>
 
+
+    <string name="delete_all_lists_title">Удалить все списки?</string>
+    <string name="delete_list_title">Удалить список «%s»?</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete">Удалить</string>
+
+
+    <string name="rename_list_title">Переименование списка</string>
+    <string name="list_name_label">Название списка</string>
+    <string name="list_name_hint">Введите название</string>
+    <string name="rename">Переименовать</string>
+
 </resources>
