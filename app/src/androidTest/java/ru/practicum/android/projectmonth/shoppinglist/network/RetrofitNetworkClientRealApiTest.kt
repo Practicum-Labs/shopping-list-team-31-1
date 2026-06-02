@@ -60,6 +60,12 @@ class RetrofitNetworkClientRealApiTest {
         println("userId: ${loginResp?.userid}")
         println("access_token: ${loginResp?.accessToken}")
         println("refresh_token: ${loginResp?.refreshToken}")
+
+        val bearerToken = "Bearer ${loginResp?.accessToken}"
+
+        val checkAuthResponse = apiService.checkAuthorization(bearerToken).body()
+        println("check authorization: $checkAuthResponse")
+
     }
 
 
