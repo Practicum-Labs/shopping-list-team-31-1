@@ -28,4 +28,8 @@ class ProductInteractorImpl(val repository: ProductRepository) : ProductInteract
     override fun saveNewProduct(product: Product): Flow<Product> {
         return repository.saveNewProduct(product)
     }
+
+    override fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
+        return repository.getProductsByShoppingListId(id)
+    }
 }

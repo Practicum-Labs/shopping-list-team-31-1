@@ -39,7 +39,9 @@ val measureUnitsDropdownColor = Color(0xFFFAEBE0)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductBottomSheet(
-    onValuesChange: (productName: String, number: String, measureUnit: String) -> Unit
+    onNameChange: (String) -> Unit,
+    onNumberChange: (Float) -> Unit,
+    onUnitChange: (String) -> Unit
 ) {
     val measureUnits = stringArrayResource(R.array.measure_units)
 
@@ -67,7 +69,7 @@ fun AddProductBottomSheet(
                 value = productName,
                 onValueChange = {
                     productName = it
-                    onValuesChange(productName, number, selectedUnit)
+                    onNameChange(productName)
                 },
                 labelResId = R.string.products_new_textfield_label,
                 placeholderResId = R.string.products_new_textfield_placeholder,
@@ -85,7 +87,8 @@ fun AddProductBottomSheet(
                     value = number,
                     onValueChange = {
                         number = it
-                        onValuesChange(productName, number, selectedUnit)
+
+                        onNumberChange(number.toFloatOrNull() ?: 0f)
                     },
                     labelResId = R.string.products_new_textfield_number,
                     placeholderResId = R.string.products_new_textfield_number,
@@ -102,9 +105,7 @@ fun AddProductBottomSheet(
                 ) {
                     OutlinedTextField(
                         value = selectedUnit,
-                        onValueChange = {
-                            onValuesChange(productName, number, selectedUnit)
-                        },
+                        onValueChange = { },
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
                         placeholder = {
@@ -130,6 +131,8 @@ fun AddProductBottomSheet(
                                 onClick = {
                                     selectedUnit = unit
                                     isDropdownExpanded = false
+
+                                    onUnitChange(unit)
                                 }
                             )
                         }
@@ -139,7 +142,11 @@ fun AddProductBottomSheet(
                 // Кнопка минус
                 RoundIconButton(
                     onClick = {
-                        number = trimInteger(currentNumber - 1)
+                        val newNumber = currentNumber - 1
+
+                        number = trimInteger(newNumber)
+
+                        onNumberChange(newNumber)
                     },
                     iconResId = R.drawable.ic_remove,
                     enabled = minusButtonEnabled
@@ -148,7 +155,11 @@ fun AddProductBottomSheet(
                 // Кнопка плюс
                 RoundIconButton(
                     onClick = {
-                        number = trimInteger(currentNumber + 1)
+                        val newNumber = currentNumber + 1
+
+                        number = trimInteger(newNumber)
+
+                        onNumberChange(newNumber)
                     },
                     iconResId = R.drawable.ic_add
                 )
@@ -162,11 +173,13 @@ fun AddProductBottomSheet(
 @Composable
 fun AddProductBottomSheetPreview() {
     AddProductBottomSheet(
-        onValuesChange = { name, number, unit -> { } }
+        onNameChange = { },
+        onNumberChange = { },
+        onUnitChange = { }
     )
 }
 
 // Обрезать .0 для целого количества товаров
-private fun trimInteger(digit: Float): String {
+fun trimInteger(digit: Float): String {
     return if (digit % 1.0 == 0.0) digit.toInt().toString() else digit.toString()
 }
