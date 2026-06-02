@@ -7,6 +7,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.CheckAuthorizationResponse
 import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.LoginRequest
 import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.LoginResponse
 import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.RefreshResponse
@@ -40,6 +41,6 @@ interface AuthApiService {
     @GET("auth/check")
     suspend fun checkAuthorization(
         @Header("Authorization") accessBearerToken: String
-    ): Response<LoginResponse>
+    ): Response<CheckAuthorizationResponse>
 
 }
