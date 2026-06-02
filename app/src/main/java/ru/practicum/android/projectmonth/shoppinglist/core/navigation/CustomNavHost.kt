@@ -36,12 +36,10 @@ fun CustomNavHost(
         composable(
             route = Destination.Products.route,
             arguments = listOf(navArgument("shoppingListId") { type = NavType.LongType })
-        ) { backStackEntry ->
-            val shoppingListId = backStackEntry.arguments?.getLong("shoppingListId") ?: 0
-
+        ) {
             ProductsScreen(
                 navController = navController,
-                shoppingListId = shoppingListId
+                viewModel = koinViewModel()
             )
         }
     }

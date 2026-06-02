@@ -36,7 +36,6 @@ class ProductRepositoryImpl(
             .first())
     }
 
-
     override fun saveNewProductAndReturnId(product: Product): Flow<Long> = flow {
         emit(appDatabase.productDao().insert(productDbConverter.map(product)))
     }
@@ -47,6 +46,17 @@ class ProductRepositoryImpl(
             appDatabase.productDao().getById(id)
                 .mapNotNull { productDbConverter.map(it) }
         )
+    }
+
+    override fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
+        return appDatabase
+            .productDao()
+            .getProductsByShoppingListId(id)
+            .map { entities ->
+                entities.mapNotNull { productEntity ->
+                    productDbConverter.map(productEntity)
+                }
+            }
     }
 
 }

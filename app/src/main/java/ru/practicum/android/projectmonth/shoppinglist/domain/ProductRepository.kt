@@ -11,4 +11,5 @@ interface ProductRepository {
     fun saveNewProductAndReturnId(product: Product): Flow<Long>
     fun saveNewProduct(product: Product): Flow<Product>
 
+    fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
 }
