@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.di
 
+import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -11,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.projectmonth.shoppinglist.BuildConfig
 import ru.practicum.android.projectmonth.shoppinglist.data.converter.db.ProductDbConverter
 import ru.practicum.android.projectmonth.shoppinglist.data.converter.db.ShoppingListDbConverter
+import ru.practicum.android.projectmonth.shoppinglist.data.converter.network.AuthConverter
 import ru.practicum.android.projectmonth.shoppinglist.data.db.AppDatabase
 import ru.practicum.android.projectmonth.shoppinglist.data.network.AuthApiService
 import ru.practicum.android.projectmonth.shoppinglist.data.network.HeadersInterceptor
@@ -33,17 +35,23 @@ val dataModule = module {
             .create(AuthApiService::class.java)
     }
 
+    // SharedPreferences
+    single {
+        androidContext()
+            .getSharedPreferences("shopinglist_preferences", Context.MODE_PRIVATE)
+    }
 
-    // region Converters
+    // Gson
+    factory { Gson() }
+
+    single {
+        AuthConverter()
+    }
     single {
         ShoppingListDbConverter(get())
     }
     single {
         ProductDbConverter()
-    }
-
-    factory {
-        Gson()
     }
 
     single {
