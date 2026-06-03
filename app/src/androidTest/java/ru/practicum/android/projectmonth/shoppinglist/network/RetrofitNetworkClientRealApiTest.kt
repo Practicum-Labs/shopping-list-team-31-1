@@ -44,8 +44,8 @@ class RetrofitNetworkClientRealApiTest {
     @Test
     fun loginTest() = runBlocking {
         val request = LoginRequest(
-            email = "dchechumaev@mail.ru",
-            password = "dimaMosch"
+            email = "",
+            password = ""
         )
         val response = apiService.loginUser(request)
 
@@ -70,8 +70,8 @@ class RetrofitNetworkClientRealApiTest {
     @Test
     fun loginTestBadRequest() = runBlocking {
         val request = LoginRequest(
-            email = "dchechumaev@mail.ru",
-            password = "dfdd"
+            email = "",
+            password = ""
         )
         val response = apiService.loginUser(request)
         println("Unsuccess authorization: code=${response.code()}, message=${response.errorBody()?.string()}")
@@ -80,8 +80,8 @@ class RetrofitNetworkClientRealApiTest {
     @Test
     fun loginTestUnauthorized() = runBlocking {
         val request = LoginRequest(
-            email = "dchechumaev@mail.ru",
-            password = "dfddddRrrr"
+            email = "",
+            password = ""
         )
 
         val response = apiService.loginUser(request)
