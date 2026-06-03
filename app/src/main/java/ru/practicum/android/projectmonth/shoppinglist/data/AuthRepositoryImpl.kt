@@ -55,7 +55,6 @@ class AuthRepositoryImpl(
     }
         .flowOn(Dispatchers.IO)
 
-
     override fun refreshAccessToken(): Flow<SecurityState> = flow {
         val refreshToken = sharedPreferences.getString(REFRESH_TOKEN, null)
         if (refreshToken == null) {
@@ -77,6 +76,8 @@ class AuthRepositoryImpl(
             emit(SecurityState.ErrorAuth(message = response.errorBody()?.string(), errCode = response.code()))
         }
     }
+        .flowOn(Dispatchers.IO)
+
 
     override fun checkAuthorization(): Flow<SecurityState> = flow {
         val accessToken = sharedPreferences.getString(ACCESS_TOKEN, null)
@@ -94,6 +95,8 @@ class AuthRepositoryImpl(
         }
 
     }
+        .flowOn(Dispatchers.IO)
+
 
     companion object {
         const val INTERNAL_ERROR_CODE = -1
