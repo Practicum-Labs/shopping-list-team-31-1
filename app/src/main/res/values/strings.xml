@@ -24,6 +24,8 @@
     <string name="products_remove">Удалить товар «%s»?</string>
 
     <string name="measure_placeholder">Единицы</string>
+    <string name="login">Авторизация</string>
+    <string name="register">Регистрация</string>
 
     <string-array name="measure_units">
         <item>л</item>
