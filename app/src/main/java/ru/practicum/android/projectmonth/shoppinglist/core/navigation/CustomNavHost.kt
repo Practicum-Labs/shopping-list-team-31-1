@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.MainScreen
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.MainAuthScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.ProductsScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.ShoppingListsScreen
 
@@ -19,9 +20,16 @@ fun CustomNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "main",
+        startDestination = Destination.Auth.route,
         modifier = modifier
     ) {
+
+        composable(Destination.Auth.route) {
+            MainAuthScreen(
+                navController
+            )
+        }
+
         composable(Destination.Main.route) {
             MainScreen(
                 navController = navController
