@@ -20,19 +20,18 @@ fun CustomNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Destination.Auth.route,
+        startDestination = Destination.Main.route,
         modifier = modifier
     ) {
-
-        composable(Destination.Auth.route) {
-            MainAuthScreen(
-                navController
-            )
-        }
 
         composable(Destination.Main.route) {
             MainScreen(
                 navController = navController
+            )
+        }
+        composable(Destination.Auth.route) {
+            MainAuthScreen(
+                navController
             )
         }
         composable(Destination.ShoppingLists.route) {

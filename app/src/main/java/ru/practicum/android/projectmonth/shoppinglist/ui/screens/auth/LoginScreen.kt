@@ -70,7 +70,7 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(32.dp))
         TextButton(onClick = {
-            navController.navigate(Destination.Main.route)
+            navController.navigate(Destination.ShoppingLists.route)
         }) {
 
             Text(
@@ -79,7 +79,7 @@ fun LoginScreen(navController: NavController) {
             )
         }
         TextButton(onClick = {
-            navController.navigate(Destination.Main.route)
+            navController.navigate(Destination.ShoppingLists.route)
         }) {
 
             Text(

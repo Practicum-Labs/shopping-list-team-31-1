@@ -29,7 +29,7 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                navController.navigate(Destination.ShoppingLists.route)
+                navController.navigate(Destination.Auth.route)
             }
     ) {
         Spacer(modifier = Modifier.height(16.dp))

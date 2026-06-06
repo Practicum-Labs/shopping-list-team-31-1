@@ -88,4 +88,12 @@ class RetrofitNetworkClientRealApiTest {
         println("Unsuccess authorization: code=${response.code()}, message=${response.errorBody()?.string()}")
 
     }
+    @Test
+    fun recoveryTest() = runBlocking {
+        val email = ""
+
+        val response = apiService.recoveryPassword(email)
+        println("Trying to recover password: code=${response.code()}, message=${response.body()}")
+
+    }
 }
