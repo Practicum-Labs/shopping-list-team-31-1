@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -33,7 +32,6 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.measureUnitsDropdownColor
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 
@@ -129,7 +127,6 @@ fun LoginScreen(navController: NavController) {
 fun RegisterScreen() {
 
 }
-
 
 @Composable
 fun MainScreenTitle() {

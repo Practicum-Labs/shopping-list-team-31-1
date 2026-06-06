@@ -27,6 +27,12 @@
     <string name="login">Авторизация</string>
     <string name="register">Регистрация</string>
 
+    <string name="email">email</string>
+    <string name="password">пароль</string>
+    <string name="enter_email">Введите email</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_in_shoppinglist">Войти</string>
+
     <string-array name="measure_units">
         <item>л</item>
         <item>мл</item>
