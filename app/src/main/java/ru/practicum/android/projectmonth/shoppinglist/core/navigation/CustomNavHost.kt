@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.MainScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.MainAuthScreen
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.RecoveryPasswordScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.ProductsScreen
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.ShoppingListsScreen
 
@@ -32,6 +33,12 @@ fun CustomNavHost(
         composable(Destination.Auth.route) {
             MainAuthScreen(
                 navController
+            )
+        }
+        composable(Destination.RecoveryPassword.route) {
+            RecoveryPasswordScreen(
+                navController,
+                viewModel = koinViewModel()
             )
         }
         composable(Destination.ShoppingLists.route) {

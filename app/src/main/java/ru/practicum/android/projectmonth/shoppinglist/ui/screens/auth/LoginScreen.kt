@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
@@ -79,7 +81,7 @@ fun LoginScreen(navController: NavController) {
             )
         }
         TextButton(onClick = {
-            navController.navigate(Destination.ShoppingLists.route)
+            navController.navigate(Destination.RecoveryPassword.route)
         }) {
 
             Text(
@@ -88,4 +90,10 @@ fun LoginScreen(navController: NavController) {
             )
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(navController = rememberNavController())
 }

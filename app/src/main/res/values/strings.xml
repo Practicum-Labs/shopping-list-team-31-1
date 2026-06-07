@@ -39,6 +39,9 @@
     <string name="passwords_not_equals_warning">Введенные пароли не совпадают</string>
     <string name="email_wrong_format">Не верный формат email</string>
     <string name="clear_text">очистить</string>
+    <string name="recover_password">Сбросить пароль</string>
+    <string name="register_success">Регистрация прошла успешно! Теперь войдите в аккаунт.</string>
+    <string name="recovery_password_success">Запрос на сброс пароля успешно отправлен. Новый пароль будет выслан на {0}</string>
 
     <string-array name="measure_units">
         <item>л</item>

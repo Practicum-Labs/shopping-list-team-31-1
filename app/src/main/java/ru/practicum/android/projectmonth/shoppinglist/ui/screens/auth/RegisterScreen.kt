@@ -24,25 +24,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
-import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.MockAuthInteractor
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.WarnTextField
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.WarnRed
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel,
+    onRegistrationSuccess: () -> Unit = {}
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
+
+    var isRegistering by remember { mutableStateOf(false) }
+    var registrationError by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -55,6 +58,7 @@ fun RegisterScreen(
             value = email,
             onValueChange = {
                 email = it
+                registrationError = null
             },
 
             labelResId = R.string.email,
@@ -65,7 +69,7 @@ fun RegisterScreen(
         if (email.isEmpty()) return
 
         if (!viewModel.isValidEmail(email)) {
-            WarnTextField(R.string.email_wrong_format)
+            WarnTextField(stringResource(R.string.email_wrong_format))
             return
         }
         CustomTextInput(
@@ -82,7 +86,7 @@ fun RegisterScreen(
         )
         if (password.trim().isEmpty()) return
         if (password.trim().length < 6) {
-            WarnTextField(R.string.register_password_warning)
+            WarnTextField(stringResource(R.string.register_password_warning))
             return
         }
         CustomTextInput(
@@ -101,15 +105,30 @@ fun RegisterScreen(
 
         if (repeatPassword.isEmpty()) return
         if (repeatPassword != password) {
-            WarnTextField(R.string.passwords_not_equals_warning)
+            WarnTextField(stringResource(R.string.passwords_not_equals_warning))
             return
         }
+
+        registrationError?.let { error ->
+            WarnTextField(notificationText = error)
+        }
+
         TextButton(
             colors = ButtonDefaults.textButtonColors(
                 containerColor = BottomSheetPeach
             ),
             onClick = {
-                navController.navigate(Destination.Main.route)
+                isRegistering = true
+//                navController.navigate(Destination.Auth.route)
+                viewModel.register(email, password) { success, errorMessage ->
+                    isRegistering = false
+                    if (success) {
+                        onRegistrationSuccess() // Вызываем callback для переключения вкладки
+
+                    } else {
+                        registrationError = errorMessage ?: "Ошибка регистрации"
+                    }
+                }
             }) {
 
             Text(
@@ -120,16 +139,6 @@ fun RegisterScreen(
 
 
     }
-}
-
-@Composable
-fun WarnTextField(notificationText: Int) {
-    Text(
-        text = stringResource(notificationText),
-        fontSize = 12.sp,
-        color = WarnRed
-    )
-
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
@@ -148,4 +157,3 @@ fun RegisterScreenPreview() {
     }
 }
 
-private class MockAuthInteractor : AuthInteractor

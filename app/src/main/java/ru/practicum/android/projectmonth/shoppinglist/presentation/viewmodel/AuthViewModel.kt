@@ -13,5 +13,9 @@ open class AuthViewModel(
         return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+    fun register(email: String, password: String, onRegistrationSuccess: (success: Boolean, errorMessage: String) -> Unit) {
+        onRegistrationSuccess(true, "")
+    }
+
 
 }
