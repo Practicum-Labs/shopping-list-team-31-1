@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
@@ -40,10 +42,11 @@ val measureUnitsDropdownColor = Color(0xFFFAEBE0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductBottomSheet(
+fun NewProductBottomSheet(
     onNameChange: (String) -> Unit,
     onNumberChange: (Float) -> Unit,
-    onUnitChange: (String) -> Unit
+    onUnitChange: (String) -> Unit,
+    productToChange: Product? = null
 ) {
     val measureUnits = stringArrayResource(R.array.measure_units)
 
@@ -54,6 +57,17 @@ fun AddProductBottomSheet(
 
     val currentNumber = number.toFloatOrNull() ?: 0f
     val minusButtonEnabled = currentNumber >= 1
+
+    // Заполнение полей из изменяемого продукта
+    LaunchedEffect(productToChange) {
+        productName = productToChange?.name ?: ""
+        number = productToChange?.let { trimInteger(it.number) } ?: ""
+        selectedUnit = productToChange?.measureUnit ?: ""
+
+        onNameChange(productName)
+        onNumberChange(currentNumber)
+        onUnitChange(selectedUnit)
+    }
 
     Surface(
         color = BottomSheetPeach,
@@ -176,8 +190,8 @@ fun AddProductBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun AddProductBottomSheetPreview() {
-    AddProductBottomSheet(
+fun NewProductBottomSheetPreview() {
+    NewProductBottomSheet(
         onNameChange = { },
         onNumberChange = { },
         onUnitChange = { }

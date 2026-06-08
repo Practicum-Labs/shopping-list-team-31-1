@@ -4,10 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,10 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Job
@@ -41,7 +39,7 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.state.Product
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ProductsViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.AddProductBottomSheet
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
@@ -84,9 +82,6 @@ fun ProductsScreen(
         }
     }
 
-    // Размеры верхней панели для отдельного затемнения
-    var topBarSize by remember { mutableStateOf(IntSize.Zero) }
-
     // Смещение кнопки вверх при открытии диалога
     val fabOffset by remember(isBottomSheetVisible) {
         derivedStateOf {
@@ -105,10 +100,7 @@ fun ProductsScreen(
         BottomSheetScaffold(
             topBar = {
                 ProductsTopBar(
-                    navController = navController,
-                    modifier = Modifier.onGloballyPositioned { coordinates ->
-                        topBarSize = coordinates.size
-                    }
+                    navController = navController
                 )
 
                 // Затемнение верхней панели
@@ -117,13 +109,13 @@ fun ProductsScreen(
                         backgroundAlfa = backgroundAlfa,
                         onTap = onDarkBackgroundTap,
                         modifier = Modifier
-                            .width(topBarSize.width.dp)
-                            .height(topBarSize.height.dp)
+                            .fillMaxWidth()
+                            .height(64.dp)
                     )
                 }
             },
             sheetContent = {
-                AddProductBottomSheet(
+                NewProductBottomSheet(
                     onNameChange = { name ->
                         newProductName = name
                     },
@@ -132,7 +124,8 @@ fun ProductsScreen(
                     },
                     onUnitChange = { unit ->
                         newProductUnit = unit
-                    }
+                    },
+                    productToChange = productToChange
                 )
             },
             scaffoldState = scaffoldState,
@@ -158,6 +151,10 @@ fun ProductsScreen(
                         },
                         onProductChange = { product ->
                             productToChange = product
+
+                            scope.launch {
+                                scaffoldState.bottomSheetState.expand()
+                            }
                         },
                         onProductDelete = { product ->
                             productToDelete = product
@@ -182,11 +179,21 @@ fun ProductsScreen(
                     if (isBottomSheetVisible) {
                         scaffoldState.bottomSheetState.hide()
 
-                        viewModel.addProduct(
-                            name = newProductName,
-                            number = newProductNumber,
-                            measureUnit = newProductUnit
-                        )
+                        if (productToChange == null) {
+                            viewModel.addProduct(
+                                name = newProductName,
+                                number = newProductNumber,
+                                measureUnit = newProductUnit
+                            )
+                        } else {
+                            viewModel.updateProduct(
+                                productId = productToChange!!.id,
+                                name = newProductName,
+                                number = newProductNumber,
+                                measureUnit = newProductUnit
+                            )
+                            productToChange = null
+                        }
                     } else {
                         scaffoldState.bottomSheetState.expand()
                     }
