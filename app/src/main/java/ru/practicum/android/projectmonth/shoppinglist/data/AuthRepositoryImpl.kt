@@ -11,7 +11,7 @@ import ru.practicum.android.projectmonth.shoppinglist.data.network.AuthApiServic
 import ru.practicum.android.projectmonth.shoppinglist.domain.AuthRepository
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.LoginCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCredentials
-import ru.practicum.android.projectmonth.shoppinglist.domain.models.SecurityState
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
 
 class AuthRepositoryImpl(
     val sharedPreferences: SharedPreferences,
@@ -19,41 +19,36 @@ class AuthRepositoryImpl(
     val authConverter: AuthConverter
 ): AuthRepository {
 
-    override fun registerUser(registerCredentials: RegisterCredentials): Flow<SecurityState> = flow {
+    override suspend fun registerUser(registerCredentials: RegisterCredentials): SecurityState {
         val response = authApiService.registerUser(authConverter.map(registerCredentials))
         val responseCode = response.code()
 
-        if(responseCode == SUCCESS_CODE) {
+        if(responseCode in 200..299) {
             val respBody = response.body()
-            sharedPreferences.edit {
-                putString(ACCESS_TOKEN, respBody?.accessToken)
-                putString(REFRESH_TOKEN, respBody?.refreshToken)
-            }
-            emit(SecurityState.SuccessRegister("success register. User ID = ${respBody?.userid}"))
+            return SecurityState.SuccessRegister("success register. User ID = ${respBody?.userid}")
         } else {
-            emit(SecurityState.ErrorRegister(message = response.errorBody()?.string(), errCode = response.code()))
+            return SecurityState.ErrorRegister(message = response.errorBody()?.string(), errCode = response.code())
         }
 
     }
-        .flowOn(Dispatchers.IO)
 
-    override fun authenticate(loginCredentials: LoginCredentials): Flow<SecurityState> = flow {
+    override suspend fun authenticate(loginCredentials: LoginCredentials): SecurityState {
         val response = authApiService.loginUser(authConverter.map(loginCredentials))
         val responseCode = response.code()
 
-        if(responseCode == SUCCESS_CODE) {
+        if(responseCode in 200..299) {
             val respBody = response.body()
             sharedPreferences.edit {
                 putString(ACCESS_TOKEN, respBody?.accessToken)
                 putString(REFRESH_TOKEN, respBody?.refreshToken)
+                putString(LOGIN, loginCredentials.email)
             }
-            emit(SecurityState.SuccessAuth(sharedPreferences.getString(ACCESS_TOKEN, null)))
+            return SecurityState.SuccessAuth(sharedPreferences.getString(ACCESS_TOKEN, null))
         } else {
-            emit(SecurityState.ErrorAuth(message = response.errorBody()?.string(), errCode = response.code()))
+            return SecurityState.ErrorAuth(message = response.errorBody()?.string(), errCode = response.code())
         }
 
     }
-        .flowOn(Dispatchers.IO)
 
     override fun refreshAccessToken(): Flow<SecurityState> = flow {
         val refreshToken = sharedPreferences.getString(REFRESH_TOKEN, null)
@@ -65,7 +60,7 @@ class AuthRepositoryImpl(
         val response = authApiService.refreshAccessToken(refreshToken)
         val responseCode = response.code()
 
-        if(responseCode == SUCCESS_CODE) {
+        if(responseCode in 200..299) {
             val respBody = response.body()
             sharedPreferences.edit {
                 putString(ACCESS_TOKEN, respBody?.accessToken)
@@ -88,7 +83,7 @@ class AuthRepositoryImpl(
         val response = authApiService.checkAuthorization(accessToken)
         val responseCode = response.code()
 
-        if(responseCode == SUCCESS_CODE) {
+        if(responseCode in 200..299) {
             emit(SecurityState.CheckAuthSuccess())
         } else {
             emit(SecurityState.CheckAuthError(message = response.errorBody()?.string(), errCode = response.code()))
@@ -104,6 +99,6 @@ class AuthRepositoryImpl(
         const val NO_REFRESH_TOKEN = "В приложении не был сохранен refresh_token"
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"
-        const val SUCCESS_CODE = 200
+        const val LOGIN = "login"
     }
 }

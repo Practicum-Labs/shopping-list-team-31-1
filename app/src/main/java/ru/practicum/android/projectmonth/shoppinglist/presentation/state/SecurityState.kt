@@ -1,7 +1,9 @@
-package ru.practicum.android.projectmonth.shoppinglist.domain.models
+package ru.practicum.android.projectmonth.shoppinglist.presentation.state
 
 sealed interface SecurityState {
 
+    data object Default: SecurityState
+    data object Loading : SecurityState
     data class SuccessAuth(val accessToken: String?): SecurityState
     data class ErrorAuth(val message: String?, val errCode: Int): SecurityState
     data class SuccessRegister(val message: String): SecurityState

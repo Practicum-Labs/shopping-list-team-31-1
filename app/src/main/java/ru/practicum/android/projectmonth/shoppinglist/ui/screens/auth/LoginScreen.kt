@@ -23,10 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.MockAuthInteractor
@@ -35,11 +38,23 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel = koinViewModel()
 ) {
+
     var email by rememberSaveable  { mutableStateOf("") }
     var password by rememberSaveable  { mutableStateOf("") }
     var activePwdAndButtonElements by rememberSaveable  { mutableStateOf(false) }
+
+    var errorMsg by rememberSaveable { mutableStateOf("") }
+    val state by viewModel.authState.collectAsStateWithLifecycle()
+    when(state) {
+        is UiSecurityState.Default -> { errorMsg = "" }
+        is UiSecurityState.Loading -> { errorMsg = "" }
+        is UiSecurityState.Error -> { errorMsg = (state as UiSecurityState.Error).errMsg}
+        is UiSecurityState.Success -> {
+            navController.navigate(Destination.ShoppingLists.route)
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,6 +90,12 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 includeClearIcon = true
             )
+            if (errorMsg.isNotBlank()) {
+                WarnTextField(
+                    notificationText = errorMsg,
+                    modifier = Modifier.height(16.dp)
+                )
+            }
             if (!viewModel.isValidEmail(email)) {
                 WarnTextField(
                     notificationText = if (email.isBlank()) "" else stringResource(R.string.email_wrong_format),
@@ -97,7 +118,7 @@ fun LoginScreen(
         TextButton(
             enabled = activePwdAndButtonElements,
             onClick = {
-                navController.navigate(Destination.ShoppingLists.route)
+                viewModel.login(email, password)
             }) {
 
             Text(

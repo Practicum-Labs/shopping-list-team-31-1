@@ -61,6 +61,7 @@ fun MainAuthScreen(
 
 @Composable
 fun AuthViewPager(navController: NavController) {
+
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current

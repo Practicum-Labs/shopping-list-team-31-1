@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -24,8 +25,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.MockAuthInteractor
@@ -35,14 +38,29 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 @Composable
 fun RegisterScreen(
     viewModel: AuthViewModel,
-    onRegistrationSuccess: () -> Unit = {}
+    onRegistrationSuccess: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var repeatPassword by rememberSaveable { mutableStateOf("") }
 
     var isRegistering by rememberSaveable { mutableStateOf(false) }
-    var registrationError by rememberSaveable { mutableStateOf<String?>(null) }
+
+    var errorMsg by rememberSaveable { mutableStateOf<String?>(null) }  // ✅ сделать state
+
+    LaunchedEffect(email, password, repeatPassword) {
+        errorMsg = null
+    }
+
+    val state by viewModel.registerState.collectAsStateWithLifecycle()
+    when(state) {
+        is UiSecurityState.Default -> { errorMsg = null }
+        is UiSecurityState.Loading -> { errorMsg = null }
+        is UiSecurityState.Error -> { errorMsg = (state as UiSecurityState.Error).errMsg}
+        is UiSecurityState.Success -> {
+            onRegistrationSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -55,7 +73,6 @@ fun RegisterScreen(
             value = email,
             onValueChange = {
                 email = it
-                registrationError = null
             },
 
             labelResId = R.string.email,
@@ -106,7 +123,7 @@ fun RegisterScreen(
             return
         }
 
-        registrationError?.let { error ->
+        errorMsg?.let { error ->
             WarnTextField(notificationText = error)
         }
 
@@ -116,15 +133,7 @@ fun RegisterScreen(
             ),
             onClick = {
                 isRegistering = true
-                viewModel.register(email, password) { success, errorMessage ->
-                    isRegistering = false
-                    if (success) {
-                        onRegistrationSuccess()
-
-                    } else {
-                        registrationError = errorMessage
-                    }
-                }
+                viewModel.register(email, password)
             }) {
 
             Text(
@@ -147,7 +156,7 @@ fun RegisterScreenPreview() {
     Column {
         Spacer(modifier = Modifier.height(40.dp))
         RegisterScreen(
-            viewModel = mockViewModel
+            viewModel = mockViewModel,  onRegistrationSuccess = {}
         )
     }
 }
