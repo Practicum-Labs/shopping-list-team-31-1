@@ -15,7 +15,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,8 +24,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
@@ -36,16 +34,15 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 
 @Composable
 fun RegisterScreen(
-    navController: NavController,
     viewModel: AuthViewModel,
     onRegistrationSuccess: () -> Unit = {}
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var repeatPassword by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var repeatPassword by rememberSaveable { mutableStateOf("") }
 
-    var isRegistering by remember { mutableStateOf(false) }
-    var registrationError by remember { mutableStateOf<String?>(null) }
+    var isRegistering by rememberSaveable { mutableStateOf(false) }
+    var registrationError by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -119,14 +116,13 @@ fun RegisterScreen(
             ),
             onClick = {
                 isRegistering = true
-//                navController.navigate(Destination.Auth.route)
                 viewModel.register(email, password) { success, errorMessage ->
                     isRegistering = false
                     if (success) {
-                        onRegistrationSuccess() // Вызываем callback для переключения вкладки
+                        onRegistrationSuccess()
 
                     } else {
-                        registrationError = errorMessage ?: "Ошибка регистрации"
+                        registrationError = errorMessage
                     }
                 }
             }) {
@@ -151,8 +147,7 @@ fun RegisterScreenPreview() {
     Column {
         Spacer(modifier = Modifier.height(40.dp))
         RegisterScreen(
-            viewModel = mockViewModel,
-            navController = rememberNavController()
+            viewModel = mockViewModel
         )
     }
 }

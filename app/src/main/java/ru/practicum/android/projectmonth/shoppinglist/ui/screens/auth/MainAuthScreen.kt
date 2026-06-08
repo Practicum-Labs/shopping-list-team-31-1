@@ -125,9 +125,8 @@ fun AuthViewPager(navController: NavController) {
             modifier = Modifier.fillMaxSize()
         ) { page ->
             when (page) {
-                0 -> LoginScreen(navController)
+                0 -> LoginScreen(navController, koinViewModel())
                 1 -> RegisterScreen(
-                    navController,
                     koinViewModel(),
                     onRegistrationSuccess = onRegistrationSuccess
                 )

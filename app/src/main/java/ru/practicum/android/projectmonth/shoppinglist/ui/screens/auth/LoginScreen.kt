@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +14,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +27,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
+import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.MockAuthInteractor
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.WarnTextField
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun LoginScreen(
+    navController: NavController,
+    viewModel: AuthViewModel
+) {
+    var email by rememberSaveable  { mutableStateOf("") }
+    var password by rememberSaveable  { mutableStateOf("") }
+    var activePwdAndButtonElements by rememberSaveable  { mutableStateOf(false) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,7 +52,7 @@ fun LoginScreen(navController: NavController) {
         ) {
             CustomTextInput(
                 value = email,
-                onValueChange = { email = it},
+                onValueChange = { email = it },
                 labelResId = R.string.email,
                 placeholderResId = R.string.enter_email,
                 modifier = Modifier.fillMaxWidth(),
@@ -53,15 +61,30 @@ fun LoginScreen(navController: NavController) {
 
             CustomTextInput(
                 value = password,
-                onValueChange = { password = it},
+                onValueChange = {
+                    if (activePwdAndButtonElements) {
+                        password = it
+                    }
+                    if (it.trim() == "") {
+                        password = it
+                    }
+                },
                 labelResId = R.string.password,
                 placeholderResId = R.string.enter_password,
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 includeClearIcon = true
             )
-            Spacer(modifier = Modifier.height(16.dp))
-
+            if (!viewModel.isValidEmail(email)) {
+                WarnTextField(
+                    notificationText = if (email.isBlank()) "" else stringResource(R.string.email_wrong_format),
+                    modifier = Modifier.height(16.dp)
+                )
+                activePwdAndButtonElements = false
+            } else {
+                Spacer(modifier = Modifier.height(16.dp))
+                activePwdAndButtonElements = true
+            }
         }
 
         Image(
@@ -71,9 +94,11 @@ fun LoginScreen(navController: NavController) {
         )
 
         Spacer(modifier = Modifier.height(32.dp))
-        TextButton(onClick = {
-            navController.navigate(Destination.ShoppingLists.route)
-        }) {
+        TextButton(
+            enabled = activePwdAndButtonElements,
+            onClick = {
+                navController.navigate(Destination.ShoppingLists.route)
+            }) {
 
             Text(
                 text = stringResource(R.string.enter_in_shoppinglist),
@@ -92,8 +117,12 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(navController = rememberNavController())
+    LoginScreen(
+        navController = rememberNavController(),
+        viewModel = AuthViewModel(MockAuthInteractor())
+    )
 }
