@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,10 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
@@ -32,9 +31,6 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 import kotlin.math.abs
-
-// Используется только здесь, нет необходимости выносить в тему
-val roundButtonBackground = Color(0xFFFEDDBD)
 
 @Composable
 fun SwipeableProductItem(
@@ -48,11 +44,6 @@ fun SwipeableProductItem(
     // Ширина для 2 иконок в кружочках (40 x 2 + 4 + 16 x 2) - размеры и отступы
     val iconsWidth = with(LocalDensity.current) { 116.dp.toPx() }
     val swipeThreshold = with(LocalDensity.current) { 50.dp.toPx() }
-
-    val roundButtonColors = IconButtonDefaults.iconButtonColors(
-        containerColor = roundButtonBackground,
-        contentColor = DarkText
-    )
 
     Box(
         modifier = Modifier
@@ -70,8 +61,7 @@ fun SwipeableProductItem(
                 onClick = {
                     onProductChange(item)
                     offsetX = 0f
-                },
-                colors = roundButtonColors
+                }
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -82,8 +72,7 @@ fun SwipeableProductItem(
                 onClick = {
                     onProductDelete(item)
                     offsetX = 0f
-                },
-                colors = roundButtonColors
+                }
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -95,6 +84,7 @@ fun SwipeableProductItem(
             onCheckedChange = onCheckedChange,
             modifier = Modifier
                 .fillMaxWidth()
+                .offset { IntOffset(offsetX.toInt(), 0) }
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragEnd = {
@@ -117,9 +107,6 @@ fun SwipeableProductItem(
                             }
                         }
                     )
-                }
-                .graphicsLayer {
-                    translationX = offsetX
                 }
                 .background(color = LightBackground)
         )

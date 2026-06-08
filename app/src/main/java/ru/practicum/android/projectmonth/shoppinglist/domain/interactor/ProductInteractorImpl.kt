@@ -32,4 +32,8 @@ class ProductInteractorImpl(val repository: ProductRepository) : ProductInteract
     override fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
         return repository.getProductsByShoppingListId(id)
     }
+
+    override suspend fun removeProduct(productId: Long) {
+        repository.deleteProduct(productId)
+    }
 }

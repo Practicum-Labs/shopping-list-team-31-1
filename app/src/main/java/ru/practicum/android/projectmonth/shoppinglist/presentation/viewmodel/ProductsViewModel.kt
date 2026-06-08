@@ -64,4 +64,11 @@ class ProductsViewModel(
             }
         }
     }
+
+    fun removeProduct(productId: Long) {
+        viewModelScope.launch {
+            productInteractor.removeProduct(productId)
+        }
+        getProducts()
+    }
 }

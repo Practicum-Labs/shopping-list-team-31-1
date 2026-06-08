@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedM
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.AddProductBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 
 // Используется только здесь, нет необходимости выносить в тему
@@ -67,6 +69,9 @@ fun ProductsScreen(
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
     var newProductUnit by remember { mutableStateOf("") }
+
+    var productToChange by remember { mutableStateOf<Product?>(null) }
+    var productToDelete by remember { mutableStateOf<Product?>(null) }
 
     val isBottomSheetVisible = scaffoldState.bottomSheetState.targetValue == SheetValue.Expanded
 
@@ -150,12 +155,16 @@ fun ProductsScreen(
                         products = uiState.data,
                         onCheckedChange = { product, isChecked ->
                             viewModel.checkProduct(product, isChecked)
+                        },
+                        onProductChange = { product ->
+                            productToChange = product
+                        },
+                        onProductDelete = { product ->
+                            productToDelete = product
                         }
                     )
                 }
             }
-
-
 
             // Затемнение фона
             if (backgroundAlfa > 0f) {
@@ -195,13 +204,28 @@ fun ProductsScreen(
                     }
                 }
         )
+
+        productToDelete?.let { product ->
+            DeleteConfirmationDialog(
+                title = stringResource(R.string.products_remove, product.name.trim()),
+                onDismiss = {
+                    productToDelete = null
+                },
+                onConfirm = {
+                    viewModel.removeProduct(product.id)
+                    productToDelete = null
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun ProductsContent(
     products: List<Product>,
-    onCheckedChange: (Product, Boolean) -> Unit
+    onCheckedChange: (Product, Boolean) -> Unit,
+    onProductChange: (Product) -> Unit,
+    onProductDelete: (Product) -> Unit
 ) {
     LazyColumn {
         items(
@@ -214,8 +238,12 @@ fun ProductsContent(
                 onCheckedChange = { isChecked ->
                     onCheckedChange(products[index], isChecked)
                 },
-                onProductChange = {  },
-                onProductDelete = {  }
+                onProductChange = {
+                    onProductChange(products[index])
+                },
+                onProductDelete = {
+                    onProductDelete(products[index])
+                }
             )
 
             HorizontalDivider(
