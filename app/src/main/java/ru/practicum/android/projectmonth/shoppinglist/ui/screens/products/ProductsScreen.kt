@@ -3,23 +3,16 @@ package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -48,13 +41,9 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.Pro
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.AddProductBottomSheet
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.trimInteger
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
 // Используется только здесь, нет необходимости выносить в тему
 val productListDividerColor = Color(0xFFCAC4D0)

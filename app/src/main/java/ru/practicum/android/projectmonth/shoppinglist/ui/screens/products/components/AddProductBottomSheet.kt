@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -102,6 +104,7 @@ fun AddProductBottomSheet(
                     onExpandedChange = { isDropdownExpanded = !isDropdownExpanded },
                     modifier = Modifier
                         .weight(1f)
+                        .height(56.dp)
                 ) {
                     OutlinedTextField(
                         value = selectedUnit,
@@ -149,7 +152,8 @@ fun AddProductBottomSheet(
                         onNumberChange(newNumber)
                     },
                     iconResId = R.drawable.ic_remove,
-                    enabled = minusButtonEnabled
+                    enabled = minusButtonEnabled,
+                    modifier = Modifier.offset(y = (-8).dp)
                 )
 
                 // Кнопка плюс
@@ -161,7 +165,8 @@ fun AddProductBottomSheet(
 
                         onNumberChange(newNumber)
                     },
-                    iconResId = R.drawable.ic_add
+                    iconResId = R.drawable.ic_add,
+                    modifier = Modifier.offset(y = (-8).dp)
                 )
             }
         }
