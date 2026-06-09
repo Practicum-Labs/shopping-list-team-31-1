@@ -1,15 +1,24 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
 @Composable
@@ -19,7 +28,9 @@ fun CustomTextInput(
     @StringRes labelResId: Int,
     @StringRes placeholderResId: Int,
     modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Unspecified)
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Unspecified),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    includeClearIcon: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -35,6 +46,38 @@ fun CustomTextInput(
         },
         singleLine = true,
         keyboardOptions = keyboardOptions,
-        modifier = modifier.height(64.dp)
+        modifier = modifier.height(64.dp),
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            if (includeClearIcon) {
+                if (value.isNotEmpty()) {
+                    IconButton(
+                        onClick = { onValueChange("") }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_clear),
+                            contentDescription = stringResource(R.string.clear_text),
+                            tint = MediumDarkText
+                        )
+                    }
+                }
+            }
+        }
     )
+}
+
+@Preview
+@Composable
+fun CustomTextInputPreview() {
+    CustomTextInput(
+        value = "Текст",
+        onValueChange = {},
+        labelResId = R.string.email,
+        placeholderResId = R.string.enter_email,
+        modifier = Modifier
+            .padding()
+            .background(Color.White)
+            .padding(vertical = 2.dp)
+    )
+
 }

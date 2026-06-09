@@ -12,5 +12,6 @@ val RegularBrown = Color(0xFF845416)
 
 
 val Purple80 = Color(0xFFD0BCFF)
+val WarnRed = Color(0xFFFF0000)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
