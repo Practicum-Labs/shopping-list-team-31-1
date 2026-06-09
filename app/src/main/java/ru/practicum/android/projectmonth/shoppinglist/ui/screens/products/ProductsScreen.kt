@@ -3,22 +3,16 @@ package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -33,11 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
@@ -45,12 +39,11 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.state.Product
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ProductsViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.AddProductBottomSheet
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.trimInteger
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
 // Используется только здесь, нет необходимости выносить в тему
 val productListDividerColor = Color(0xFFCAC4D0)
@@ -75,6 +68,9 @@ fun ProductsScreen(
     var newProductNumber by remember { mutableFloatStateOf(0f) }
     var newProductUnit by remember { mutableStateOf("") }
 
+    var productToChange by remember { mutableStateOf<Product?>(null) }
+    var productToDelete by remember { mutableStateOf<Product?>(null) }
+
     val isBottomSheetVisible = scaffoldState.bottomSheetState.targetValue == SheetValue.Expanded
 
     // Затемнение фона при открытии диалога
@@ -86,9 +82,6 @@ fun ProductsScreen(
         }
     }
 
-    // Размеры верхней панели для отдельного затемнения
-    var topBarSize by remember { mutableStateOf(IntSize.Zero) }
-
     // Смещение кнопки вверх при открытии диалога
     val fabOffset by remember(isBottomSheetVisible) {
         derivedStateOf {
@@ -98,35 +91,31 @@ fun ProductsScreen(
         }
     }
 
+    // Обработка кликов по фону при открытом диалоге
+    val onDarkBackgroundTap = {
+        scope.launch { scaffoldState.bottomSheetState.hide() }
+    }
+
     Box(Modifier.fillMaxSize()) {
         BottomSheetScaffold(
             topBar = {
                 ProductsTopBar(
-                    navController = navController,
-                    modifier = Modifier.onGloballyPositioned { coordinates ->
-                        topBarSize = coordinates.size
-                    }
+                    navController = navController
                 )
 
                 // Затемнение верхней панели
                 if (backgroundAlfa > 0f) {
-                    // TODO: Вынести в отдельную функцию
-                    Box(
+                    DarkBackgroundBox(
+                        backgroundAlfa = backgroundAlfa,
+                        onTap = onDarkBackgroundTap,
                         modifier = Modifier
-                            .width(topBarSize.width.dp)
-                            .height(topBarSize.height.dp)
-                            .background(Color.Black.copy(alpha = backgroundAlfa * 0.6f))
-                            // Обработка кликов по фону при открытом диалоге
-                            .pointerInput(Unit) {
-                                detectTapGestures(onTap = {
-                                    scope.launch { scaffoldState.bottomSheetState.hide() }
-                                })
-                            }
+                            .fillMaxWidth()
+                            .height(64.dp)
                     )
                 }
             },
             sheetContent = {
-                AddProductBottomSheet(
+                NewProductBottomSheet(
                     onNameChange = { name ->
                         newProductName = name
                     },
@@ -135,7 +124,8 @@ fun ProductsScreen(
                     },
                     onUnitChange = { unit ->
                         newProductUnit = unit
-                    }
+                    },
+                    productToChange = productToChange
                 )
             },
             scaffoldState = scaffoldState,
@@ -158,24 +148,27 @@ fun ProductsScreen(
                         products = uiState.data,
                         onCheckedChange = { product, isChecked ->
                             viewModel.checkProduct(product, isChecked)
+                        },
+                        onProductChange = { product ->
+                            productToChange = product
+
+                            scope.launch {
+                                scaffoldState.bottomSheetState.expand()
+                            }
+                        },
+                        onProductDelete = { product ->
+                            productToDelete = product
                         }
                     )
                 }
             }
 
-
-
             // Затемнение фона
             if (backgroundAlfa > 0f) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = backgroundAlfa * 0.6f))
-                        .pointerInput(Unit) {
-                            detectTapGestures(onTap = {
-                                scope.launch { scaffoldState.bottomSheetState.hide() }
-                            })
-                        }
+                DarkBackgroundBox(
+                    backgroundAlfa = backgroundAlfa,
+                    onTap = onDarkBackgroundTap,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
@@ -186,11 +179,21 @@ fun ProductsScreen(
                     if (isBottomSheetVisible) {
                         scaffoldState.bottomSheetState.hide()
 
-                        viewModel.addProduct(
-                            name = newProductName,
-                            number = newProductNumber,
-                            measureUnit = newProductUnit
-                        )
+                        if (productToChange == null) {
+                            viewModel.addProduct(
+                                name = newProductName,
+                                number = newProductNumber,
+                                measureUnit = newProductUnit
+                            )
+                        } else {
+                            viewModel.updateProduct(
+                                productId = productToChange!!.id,
+                                name = newProductName,
+                                number = newProductNumber,
+                                measureUnit = newProductUnit
+                            )
+                            productToChange = null
+                        }
                     } else {
                         scaffoldState.bottomSheetState.expand()
                     }
@@ -208,13 +211,28 @@ fun ProductsScreen(
                     }
                 }
         )
+
+        productToDelete?.let { product ->
+            DeleteConfirmationDialog(
+                title = stringResource(R.string.products_remove, product.name.trim()),
+                onDismiss = {
+                    productToDelete = null
+                },
+                onConfirm = {
+                    viewModel.removeProduct(product.id)
+                    productToDelete = null
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun ProductsContent(
     products: List<Product>,
-    onCheckedChange: (Product, Boolean) -> Unit
+    onCheckedChange: (Product, Boolean) -> Unit,
+    onProductChange: (Product) -> Unit,
+    onProductDelete: (Product) -> Unit
 ) {
     LazyColumn {
         items(
@@ -222,10 +240,16 @@ fun ProductsContent(
             key = { index -> products[index].id }
         ) { index ->
 
-            ProductItem(
+            SwipeableProductItem(
                 item = products[index],
                 onCheckedChange = { isChecked ->
                     onCheckedChange(products[index], isChecked)
+                },
+                onProductChange = {
+                    onProductChange(products[index])
+                },
+                onProductDelete = {
+                    onProductDelete(products[index])
                 }
             )
 
@@ -237,35 +261,20 @@ fun ProductsContent(
     }
 }
 
+
+
 @Composable
-fun ProductItem(
-    item: Product,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+fun DarkBackgroundBox(
+    backgroundAlfa: Float,
+    onTap: () -> Job,
+    modifier: Modifier
 ) {
-    Row(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = item.checked,
-            onCheckedChange = onCheckedChange,
-            modifier = Modifier.padding(end = 16.dp)
-        )
-        Column {
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.labelLarge,
-                color = DarkText
-            )
-            Text(
-                text = "${trimInteger(item.number)} ${item.measureUnit}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MediumDarkText
-            )
-        }
-    }
+            .background(Color.Black.copy(alpha = backgroundAlfa * 0.6f))
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { onTap() })
+            }
+    )
 }
 

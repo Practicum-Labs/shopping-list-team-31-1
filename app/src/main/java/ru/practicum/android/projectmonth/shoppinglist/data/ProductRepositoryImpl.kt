@@ -59,4 +59,9 @@ class ProductRepositoryImpl(
             }
     }
 
+    override suspend fun deleteProduct(productId: Long) {
+        appDatabase
+            .productDao()
+            .deleteById(productId)
+    }
 }

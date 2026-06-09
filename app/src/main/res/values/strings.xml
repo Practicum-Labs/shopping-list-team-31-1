@@ -21,27 +21,10 @@
     <string name="products_new_textfield_placeholder">Добавить новый товар</string>
     <string name="products_new_textfield_number">Количество</string>
 
+    <string name="products_remove">Удалить товар «%s»?</string>
+
     <string name="measure_placeholder">Единицы</string>
 
-    <string name="measure_liter">л</string>
-    <string name="measure_milliliter">мл</string>
-    <string name="measure_package">уп</string>
-    <string name="measure_pack">пач</string>
-    <string name="measure_piece">шт</string>
-    <string name="measure_kilogram">кг</string>
-    <string name="measure_gram">г</string>
-
-
-    <string name="delete_all_lists_title">Удалить все списки?</string>
-    <string name="delete_list_title">Удалить список «%s»?</string>
-    <string name="cancel">Отмена</string>
-    <string name="delete">Удалить</string>
-
-
-    <string name="rename_list_title">Переименование списка</string>
-    <string name="list_name_label">Название списка</string>
-    <string name="list_name_hint">Введите название</string>
-    <string name="rename">Переименовать</string>
     <string-array name="measure_units">
         <item>л</item>
         <item>мл</item>
@@ -51,5 +34,15 @@
         <item>кг</item>
         <item>г</item>
     </string-array>
+
+    <string name="delete_all_lists_title">Удалить все списки?</string>
+    <string name="delete_list_title">Удалить список «%s»?</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete">Удалить</string>
+
+    <string name="rename_list_title">Переименование списка</string>
+    <string name="list_name_label">Название списка</string>
+    <string name="list_name_hint">Введите название</string>
+    <string name="rename">Переименовать</string>
 
 </resources>

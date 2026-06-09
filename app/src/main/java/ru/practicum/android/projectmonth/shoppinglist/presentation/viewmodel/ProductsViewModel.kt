@@ -64,4 +64,29 @@ class ProductsViewModel(
             }
         }
     }
+
+    fun updateProduct(productId: Long, name: String, number: Float, measureUnit: String) {
+        viewModelScope.launch {
+            productInteractor.updateProduct(
+                id = productId,
+                product = Product(
+                    id = productId,
+                    name = name,
+                    checked = false,
+                    number = number,
+                    measureUnit = measureUnit,
+                    shoppingListId = shoppingListId
+                )
+            ).collect {
+                getProducts()
+            }
+        }
+    }
+
+    fun removeProduct(productId: Long) {
+        viewModelScope.launch {
+            productInteractor.removeProduct(productId)
+        }
+        getProducts()
+    }
 }
