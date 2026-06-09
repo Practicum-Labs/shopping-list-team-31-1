@@ -26,10 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.MainScreenTitle
@@ -40,10 +42,37 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 @Composable
 fun RecoveryPasswordScreen(
     navController: NavController,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel,
+    initialEmail: String = ""
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf(initialEmail) }
     val context = LocalContext.current
+    val state by viewModel.recoveryPasswdState.collectAsStateWithLifecycle()
+
+    when (state) {
+        is UiSecurityState.Default,
+        is UiSecurityState.Loading -> {
+        }
+
+        is UiSecurityState.Success -> {
+            Toast.makeText(
+                context,
+                stringResource(R.string.recovery_password_success, email),
+//                (state as UiSecurityState.Success).msg,
+                Toast.LENGTH_LONG
+            ).show()
+
+            navController.popBackStack()
+        }
+        is UiSecurityState.Error -> {
+            Toast.makeText(
+                context,
+                (state as UiSecurityState.Error).errMsg,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+    }
 
     Box(
         modifier = Modifier.fillMaxHeight(),
@@ -79,19 +108,13 @@ fun RecoveryPasswordScreen(
                 return
             }
 
-            val toastMsg = stringResource(R.string.recovery_password_success, email)
             TextButton(
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = BottomSheetPeach
                 ),
                 onClick = {
-                    Toast.makeText(
-                        context,
-                        toastMsg,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    viewModel.recoveryPassword(email)
 
-                    navController.popBackStack()
                 }) {
                 Text(
                     text = stringResource(R.string.recover_password),
@@ -130,7 +153,8 @@ fun RecoveryPasswordScreenPreview2() {
 
     RecoveryPasswordScreen(
         viewModel = mockViewModel,
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        initialEmail = "oleg@oleg.olegov"
     )
 
 }

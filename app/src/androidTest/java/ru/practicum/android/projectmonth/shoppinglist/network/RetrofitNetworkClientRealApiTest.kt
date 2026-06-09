@@ -1,6 +1,8 @@
 package ru.practicum.android.diploma.data.network
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,6 +25,12 @@ class RetrofitNetworkClientRealApiTest {
 
     @Before
     fun setUp() {
+
+        val gson = GsonBuilder()
+            .setStrictness(Strictness.LENIENT)
+            .setLenient()
+            .create()
+
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeadersInterceptor())
             .addInterceptor(HttpLoggingInterceptor().apply {
@@ -33,7 +41,7 @@ class RetrofitNetworkClientRealApiTest {
         val retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.AUTH_BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
         apiService = retrofit.create(AuthApiService::class.java)
@@ -90,10 +98,30 @@ class RetrofitNetworkClientRealApiTest {
     }
     @Test
     fun recoveryTest() = runBlocking {
-        val email = ""
+        val email = "dchechumaev@mail.ru"
 
-        val response = apiService.recoveryPassword(email)
-        println("Trying to recover password: code=${response.code()}, message=${response.body()}")
+        try {
+            val response = apiService.recoveryPassword(email)
 
+            println("Recovery response:")
+            println("Code: ${response.code()}")
+            println("Content-Type: ${response.headers()["content-type"]}")
+
+            if (response.isSuccessful) {
+                // Получаем тело как строку (это будет текст, а не JSON)
+                val responseBody = response.body()?.string()
+                println("Success! Message: $responseBody")
+
+                // Проверяем, что пришел текст, а не JSON
+                assertTrue("Response should be text/plain",
+                    response.headers()["content-type"]?.contains("text/plain") == true)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                println("Recovery failed: ${response.code()}, error: $errorBody")
+            }
+        } catch (e: Exception) {
+            println("Exception: ${e.message}")
+            e.printStackTrace()
+        }
     }
 }

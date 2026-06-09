@@ -31,6 +31,7 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthIntera
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.CustomCircularProgressIndicator
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.MockAuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth.components.WarnTextField
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
@@ -53,7 +54,7 @@ fun RegisterScreen(
     }
 
     LaunchedEffect(email, password, repeatPassword) {
-        viewModel.refreshRegisterState()
+        viewModel.refreshStates()
     }
 
     Column(
@@ -129,14 +130,8 @@ fun RegisterScreen(
             WarnTextField(stringResource(R.string.passwords_not_equals_warning))
         }
 
-        when (state) {
-            is UiSecurityState.Error -> {
-                WarnTextField((state as UiSecurityState.Error).errMsg)
-            }
-            is UiSecurityState.Loading -> {
-
-            }
-            else -> {  }
+        if (state is UiSecurityState.Error) {
+            WarnTextField((state as UiSecurityState.Error).errMsg)
         }
 
         val isValid = email.isNotEmpty() &&
@@ -157,8 +152,12 @@ fun RegisterScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+        if (state is UiSecurityState.Loading) {
+            CustomCircularProgressIndicator()
+        }
     }
 }
+
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, showSystemUi = true)

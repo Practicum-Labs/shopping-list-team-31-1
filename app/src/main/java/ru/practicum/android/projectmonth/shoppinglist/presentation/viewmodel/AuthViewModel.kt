@@ -12,17 +12,18 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCred
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.*
 
 open class AuthViewModel(
     val interactor : AuthInteractor
 ) : ViewModel() {
 
-    private val _authState = MutableStateFlow<UiSecurityState>(UiSecurityState.Default)
+    private val _authState = MutableStateFlow<UiSecurityState>(Default)
     val authState: StateFlow<UiSecurityState> = _authState.asStateFlow()
-    private val _registerState = MutableStateFlow<UiSecurityState>(UiSecurityState.Default)
+    private val _registerState = MutableStateFlow<UiSecurityState>(Default)
     val registerState: StateFlow<UiSecurityState> = _registerState.asStateFlow()
-    private val _checkAuthState = MutableStateFlow<UiSecurityState>(UiSecurityState.Default)
-    val checkAuthState: StateFlow<UiSecurityState> = _checkAuthState.asStateFlow()
+    private val _recoveryPasswdState = MutableStateFlow<UiSecurityState>(Default)
+    val recoveryPasswdState: StateFlow<UiSecurityState> = _recoveryPasswdState.asStateFlow()
 
     fun isValidEmail(email: String): Boolean {
         return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -30,7 +31,7 @@ open class AuthViewModel(
 
     fun register(email: String, password: String) {
         viewModelScope.launch {
-            _registerState.value = UiSecurityState.Loading
+            _registerState.value = Loading
             interactor.register(RegisterCredentials(email, password))
                 .collect {
                     resolveSecurityState(it, _registerState)
@@ -39,11 +40,21 @@ open class AuthViewModel(
     }
 
     fun login(email: String, password: String) {
-        _authState.value = UiSecurityState.Loading
+        _authState.value = Loading
         viewModelScope.launch {
             interactor.authenticate(LoginCredentials(email, password))
                 .collect {
                     resolveSecurityState(it, _authState)
+                }
+        }
+    }
+
+    fun recoveryPassword(email: String) {
+        _recoveryPasswdState.value = Loading
+        viewModelScope.launch {
+            interactor.recoveryPassword(email)
+                .collect {
+                    resolveSecurityState(it, _recoveryPasswdState)
                 }
         }
     }
@@ -54,36 +65,30 @@ open class AuthViewModel(
     ) {
         when(it) {
             SecurityState.Default -> {}
-            SecurityState.Loading -> {}
-            is SecurityState.SuccessAuth -> {
-                state.value = UiSecurityState.Success
-//                navController.navigate(Destination.ShoppingLists.route)
+            SecurityState.Loading -> {
+                state.value = Loading
             }
-            is SecurityState.SuccessRegister -> {
-                state.value = UiSecurityState.Success
-            }
+
+            is SecurityState.SuccessAuth,
+            is SecurityState.SuccessRegister,
             is SecurityState.CheckAuthSuccess -> {
-                state.value = UiSecurityState.Success
+                state.value = Success()
             }
-            is SecurityState.ErrorAuth -> {
-                state.value = UiSecurityState.Error("code=${it.errCode} ${it.message}")
-//                authError = (securityState as SecurityState.ErrorAuth).message?: ""
+            is SecurityState.SuccessRecoveryPasswd -> {
+                state.value = Success(it.message)
             }
-            is SecurityState.ErrorRegister -> {
-                state.value = UiSecurityState.Error("code=${it.errCode} ${it.message}")
-//                registerError = (securityState as SecurityState.ErrorRegister).message?: ""
-            }
-            is SecurityState.CheckAuthError -> {
-                state.value = UiSecurityState.Error("code=${it.errCode} ${it.message}")
+
+            is SecurityState.ErrorState -> {
+                state.value = Error("code=${it.errCode} ${it.message}")
             }
         }
 
     }
 
-    fun refreshRegisterState() {
-        _registerState.value = UiSecurityState.Default
+    fun refreshStates() {
+        _authState.value = Default
+        _registerState.value = Default
+        _recoveryPasswdState.value = Default
 
     }
-
-
 }

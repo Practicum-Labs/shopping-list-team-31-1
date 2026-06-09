@@ -16,4 +16,8 @@ class MockAuthInteractor : AuthInteractor {
         emit(SecurityState.Default)
     }
 
+    override fun recoveryPassword(email: String): Flow<SecurityState> = flow {
+        emit(SecurityState.Default)
+    }
+
 }

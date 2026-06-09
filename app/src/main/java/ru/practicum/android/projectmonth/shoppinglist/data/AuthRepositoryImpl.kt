@@ -50,6 +50,18 @@ class AuthRepositoryImpl(
 
     }
 
+    override suspend fun recoveryPassword(email: String): SecurityState {
+        val response = authApiService.recoveryPassword(email)
+        val responseCode = response.code()
+
+        if(responseCode in 200..299) {
+            val respBody = response.body()?.string()
+            return SecurityState.SuccessRecoveryPasswd(respBody?: RECOVERY_REQUEST_SENT)
+        } else {
+            return SecurityState.ErrorRecoveryPasswd(message = response.errorBody()?.string(), errCode = response.code())
+        }
+    }
+
     override fun refreshAccessToken(): Flow<SecurityState> = flow {
         val refreshToken = sharedPreferences.getString(REFRESH_TOKEN, null)
         if (refreshToken == null) {
@@ -97,6 +109,7 @@ class AuthRepositoryImpl(
         const val INTERNAL_ERROR_CODE = -1
         const val NO_ACCESS_TOKEN = "В приложении не был сохранен access_token"
         const val NO_REFRESH_TOKEN = "В приложении не был сохранен refresh_token"
+        const val RECOVERY_REQUEST_SENT = "Запрос на сброс пароля отправлен"
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"
         const val LOGIN = "login"

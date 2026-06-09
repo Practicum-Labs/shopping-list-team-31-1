@@ -53,6 +53,7 @@ fun LoginScreen(
         is UiSecurityState.Error -> { errorMsg = (state as UiSecurityState.Error).errMsg}
         is UiSecurityState.Success -> {
             navController.navigate(Destination.ShoppingLists.route)
+            viewModel.refreshStates()
         }
     }
 

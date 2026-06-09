@@ -26,4 +26,10 @@ class AuthInteractorImpl(
     }
         .flowOn(Dispatchers.IO)
 
+    override fun recoveryPassword(email: String): Flow<SecurityState> = flow {
+        val respState = repository.recoveryPassword(email)
+        emit(respState)
+    }
+        .flowOn(Dispatchers.IO)
+
 }

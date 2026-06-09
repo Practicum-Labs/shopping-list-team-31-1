@@ -2,7 +2,8 @@ package ru.practicum.android.projectmonth.shoppinglist.di
 
 import android.content.Context
 import androidx.room.Room
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -22,7 +23,9 @@ val dataModule = module {
     single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(HeadersInterceptor())
-            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS })
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.HEADERS
+            })
             .build()
     }
 
@@ -42,7 +45,11 @@ val dataModule = module {
     }
 
     // Gson
-    factory { Gson() }
+    factory {
+        GsonBuilder()
+            .setStrictness(Strictness.LENIENT)
+            .create()
+    }
 
     single {
         AuthConverter()

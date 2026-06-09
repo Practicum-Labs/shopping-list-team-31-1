@@ -8,4 +8,5 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.state.Securit
 interface AuthInteractor {
     fun authenticate(loginCredentials: LoginCredentials) : Flow<SecurityState>
     fun register(registerCredentials: RegisterCredentials) : Flow<SecurityState>
+    fun recoveryPassword(email: String) : Flow<SecurityState>
 }

@@ -9,6 +9,7 @@ interface AuthRepository {
 
     suspend fun registerUser(registerCredentials: RegisterCredentials): SecurityState
     suspend fun authenticate(loginCredentials: LoginCredentials): SecurityState
+    suspend fun recoveryPassword(email: String): SecurityState
     fun refreshAccessToken(): Flow<SecurityState>
     fun checkAuthorization(): Flow<SecurityState>
 

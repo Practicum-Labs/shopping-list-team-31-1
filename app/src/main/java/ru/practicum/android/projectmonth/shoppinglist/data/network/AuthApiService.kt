@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.data.network
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -36,7 +37,7 @@ interface AuthApiService {
     @FormUrlEncoded
     suspend fun recoveryPassword (
         @Field("email") email: String,
-    ): Response<Unit>
+    ): Response<ResponseBody>
 
     @GET("auth/check")
     suspend fun checkAuthorization(
