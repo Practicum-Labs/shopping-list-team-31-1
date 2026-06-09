@@ -10,6 +10,8 @@ val LightBrownElements = Color(0xFFFFDCBB)
 val BottomSheetPeach = Color(0xFFFFF1E7)
 val RegularBrown = Color(0xFF845416)
 
+val DropdownColor = Color(0xFFFAEBE0)
+
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

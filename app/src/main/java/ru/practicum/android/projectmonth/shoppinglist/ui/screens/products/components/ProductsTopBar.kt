@@ -16,6 +16,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.TopBarButton
 @Composable
 fun ProductsTopBar(
     navController: NavController,
+    onMenuClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -34,7 +35,10 @@ fun ProductsTopBar(
             )
         },
         actions = {
-            TopBarButton(R.drawable.ic_menu)
+            TopBarButton(
+                iconResId = R.drawable.ic_menu,
+                onClick = onMenuClick
+            )
         },
         windowInsets = WindowInsets(0, 0, 0, 0),
         modifier = modifier

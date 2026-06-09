@@ -1,15 +1,22 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SheetState
@@ -20,15 +27,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.RegularBrown
 
 // Варианты сортировки
 enum class SortType {
     ALPHABETICAL,
-    CUSTOM
+    CUSTOM,
+    NONE
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,52 +61,39 @@ fun ProductsMenu(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        containerColor = BottomSheetPeach
     ) {
-        Column(modifier = Modifier.padding(bottom = 24.dp)) {
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
 
-            // 1. Пункт "Сортировка" (Контейнер для DropdownMenu)
+            // Пункт "Сортировка" (Контейнер для DropdownMenu)
             Box {
                 val sortLabel = when (currentSortType) {
                     SortType.ALPHABETICAL -> stringResource(R.string.products_menu_sort_alphabetical)
                     SortType.CUSTOM -> stringResource(R.string.products_menu_sort_custom)
+                    SortType.NONE -> stringResource(R.string.products_menu_sort_none)
                 }
 
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.products_menu_sort)) },
-                    supportingContent = { Text(sortLabel) },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_sort), // Замените на свою иконку
-                            contentDescription = null
-                        )
+                ProductsMenuItem(
+                    textResId = R.string.products_menu_sort,
+                    iconResId = R.drawable.ic_sort,
+                    onClick = {
+                        isSortMenuExpanded = true
                     },
-                    modifier = Modifier.clickable { isSortMenuExpanded = true }
+                    supportingContent = { Text(sortLabel) }
                 )
 
                 // Всплывающее меню вариантов сортировки
                 DropdownMenu(
                     expanded = isSortMenuExpanded,
-                    onDismissRequest = { isSortMenuExpanded = false }
+                    onDismissRequest = { isSortMenuExpanded = false },
+                    modifier = Modifier.background(color = DropdownColor)
                 ) {
                     // Вариант: По алфавиту
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.products_menu_sort_alphabetical)) },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_sort_alpha),
-                                contentDescription = null
-                            )
-                        },
-                        trailingIcon = {
-                            RadioButton(
-                                selected = (currentSortType == SortType.ALPHABETICAL),
-                                onClick = {
-                                    onSortTypeSelected(SortType.ALPHABETICAL)
-                                    isSortMenuExpanded = false
-                                }
-                            )
-                        },
+                    SortTypeMenuItem(
+                        textResId = R.string.products_menu_sort_alphabetical,
+                        iconResId = R.drawable.ic_sort_alpha,
+                        isSelected = (currentSortType == SortType.ALPHABETICAL),
                         onClick = {
                             onSortTypeSelected(SortType.ALPHABETICAL)
                             isSortMenuExpanded = false
@@ -100,23 +101,10 @@ fun ProductsMenu(
                     )
 
                     // Вариант: Пользовательская
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.products_menu_sort_custom)) },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_sort_custom),
-                                contentDescription = null
-                            )
-                        },
-                        trailingIcon = {
-                            RadioButton(
-                                selected = (currentSortType == SortType.CUSTOM),
-                                onClick = {
-                                    onSortTypeSelected(SortType.CUSTOM)
-                                    isSortMenuExpanded = false
-                                }
-                            )
-                        },
+                    SortTypeMenuItem(
+                        textResId = R.string.products_menu_sort_custom,
+                        iconResId = R.drawable.ic_sort_custom,
+                        isSelected = (currentSortType == SortType.CUSTOM),
                         onClick = {
                             onSortTypeSelected(SortType.CUSTOM)
                             isSortMenuExpanded = false
@@ -125,35 +113,94 @@ fun ProductsMenu(
                 }
             }
 
-            // 2. Пункт "Удалить"
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.products_menu_delete_all)) },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier.clickable {
+            // Пункт "Удалить все"
+            ProductsMenuItem(
+                textResId = R.string.products_menu_delete_all,
+                iconResId = R.drawable.ic_delete,
+                onClick = {
                     onDeleteAllClick()
                     onDismissRequest()
                 }
             )
 
-            // 3. Пункт "Очистить купленные"
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.products_menu_clear_purchased)) },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_clear),
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier.clickable {
+            // Пункт "Очистить купленные"
+            ProductsMenuItem(
+                textResId = R.string.products_menu_clear_purchased,
+                iconResId = R.drawable.ic_clear,
+                onClick = {
                     onClearPurchasedClick()
                     onDismissRequest()
                 }
             )
         }
     }
+}
+
+@Composable
+fun ProductsMenuItem(
+    @StringRes textResId: Int,
+    @DrawableRes iconResId: Int,
+    onClick: () -> Unit,
+    supportingContent: @Composable (() -> Unit)? = null
+) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = stringResource(textResId),
+                style = MaterialTheme.typography.labelLarge
+            )
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(iconResId),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        supportingContent = supportingContent,
+        colors = ListItemDefaults.colors(
+            containerColor = BottomSheetPeach,
+            headlineColor = DarkText,
+            supportingColor = Color(0xFF4A4459),
+            leadingIconColor = MediumDarkText
+        ),
+        modifier = Modifier.clickable {
+            onClick()
+        }
+    )
+}
+
+@Composable
+fun SortTypeMenuItem(
+    @StringRes textResId: Int,
+    @DrawableRes iconResId: Int,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        text = {
+            Text(
+                text = stringResource(textResId),
+                style = MaterialTheme.typography.labelLarge
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(iconResId),
+                contentDescription = null
+            )
+        },
+        trailingIcon = {
+            RadioButton(
+                selected = isSelected,
+                onClick = onClick
+            )
+        },
+        onClick = onClick,
+        colors = MenuDefaults.itemColors(
+            textColor = DarkText,
+            leadingIconColor = MediumDarkText,
+            trailingIconColor = RegularBrown
+        )
+    )
 }

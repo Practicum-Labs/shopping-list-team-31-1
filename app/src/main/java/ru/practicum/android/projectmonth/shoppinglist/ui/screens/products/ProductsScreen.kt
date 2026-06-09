@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -40,7 +41,9 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.Pro
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsMenu
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SortType
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
@@ -63,6 +66,10 @@ fun ProductsScreen(
     )
 
     val uiState = viewModel.uiState
+
+    val menuSheetState = rememberModalBottomSheetState()
+    var showMenu by remember { mutableStateOf(false) }
+    var currentSort by remember { mutableStateOf(SortType.NONE) }
 
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
@@ -100,7 +107,10 @@ fun ProductsScreen(
         BottomSheetScaffold(
             topBar = {
                 ProductsTopBar(
-                    navController = navController
+                    navController = navController,
+                    onMenuClick = {
+                        showMenu = true
+                    }
                 )
 
                 // Затемнение верхней панели
@@ -212,6 +222,7 @@ fun ProductsScreen(
                 }
         )
 
+        // Вызов диалога удаления товара
         productToDelete?.let { product ->
             DeleteConfirmationDialog(
                 title = stringResource(R.string.products_remove, product.name.trim()),
@@ -222,6 +233,20 @@ fun ProductsScreen(
                     viewModel.removeProduct(product.id)
                     productToDelete = null
                 }
+            )
+        }
+
+        // Вызов меню
+        if (showMenu) {
+            ProductsMenu(
+                sheetState = menuSheetState,
+                onDismissRequest = { showMenu = false },
+                currentSortType = currentSort,
+                onSortTypeSelected = { selectedSort ->
+                    currentSort = selectedSort
+                },
+                onDeleteAllClick = { },
+                onClearPurchasedClick = {  }
             )
         }
     }

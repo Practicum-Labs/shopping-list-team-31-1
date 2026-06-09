@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,10 +34,8 @@ import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
-
-// Используется только здесь, нет необходимости выносить в тему
-val measureUnitsDropdownColor = Color(0xFFFAEBE0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,7 +137,7 @@ fun NewProductBottomSheet(
                     ExposedDropdownMenu(
                         expanded = isDropdownExpanded,
                         onDismissRequest = { isDropdownExpanded = false },
-                        containerColor = measureUnitsDropdownColor
+                        containerColor = DropdownColor
                     ) {
                         measureUnits.forEach { unit ->
                             DropdownMenuItem(
