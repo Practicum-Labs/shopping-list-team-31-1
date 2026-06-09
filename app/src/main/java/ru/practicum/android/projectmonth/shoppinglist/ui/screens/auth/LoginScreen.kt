@@ -93,14 +93,12 @@ fun LoginScreen(
             )
             if (errorMsg.isNotBlank()) {
                 WarnTextField(
-                    notificationText = errorMsg,
-                    modifier = Modifier.height(16.dp)
+                    notificationText = errorMsg
                 )
             }
             if (!viewModel.isValidEmail(email)) {
                 WarnTextField(
-                    notificationText = if (email.isBlank()) "" else stringResource(R.string.email_wrong_format),
-                    modifier = Modifier.height(16.dp)
+                    notificationText = if (email.isBlank()) "" else stringResource(R.string.email_wrong_format)
                 )
                 activePwdAndButtonElements = false
             } else {
