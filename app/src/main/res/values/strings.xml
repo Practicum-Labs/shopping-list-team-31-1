@@ -23,6 +23,13 @@
 
     <string name="products_remove">Удалить товар «%s»?</string>
 
+    <string name="products_menu_sort">Сортировка</string>
+    <string name="products_menu_sort_alphabetical">По алфавиту</string>
+    <string name="products_menu_sort_custom">Пользовательская</string>
+    <string name="products_menu_delete_all">Удалить все</string>
+    <string name="products_menu_clear_purchased">Очистить купленные</string>
+
+
     <string name="measure_placeholder">Единицы</string>
 
     <string-array name="measure_units">
