@@ -126,7 +126,7 @@ fun ProductsMenu(
             // Пункт "Очистить купленные"
             ProductsMenuItem(
                 textResId = R.string.products_menu_clear_purchased,
-                iconResId = R.drawable.ic_clear,
+                iconResId = R.drawable.ic_clear_products,
                 onClick = {
                     onClearPurchasedClick()
                     onDismissRequest()
