@@ -38,28 +38,22 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 @Composable
 fun RegisterScreen(
     viewModel: AuthViewModel,
-    onRegistrationSuccess: () -> Unit
+    onRegistrationSuccess: (email:String) -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var repeatPassword by rememberSaveable { mutableStateOf("") }
 
-    var isRegistering by rememberSaveable { mutableStateOf(false) }
+    val state by viewModel.registerState.collectAsStateWithLifecycle()
 
-    var errorMsg by rememberSaveable { mutableStateOf<String?>(null) }  // ✅ сделать state
-
-    LaunchedEffect(email, password, repeatPassword) {
-        errorMsg = null
+    LaunchedEffect(state) {
+        if (state is UiSecurityState.Success) {
+            onRegistrationSuccess(email)
+        }
     }
 
-    val state by viewModel.registerState.collectAsStateWithLifecycle()
-    when(state) {
-        is UiSecurityState.Default -> { errorMsg = null }
-        is UiSecurityState.Loading -> { errorMsg = null }
-        is UiSecurityState.Error -> { errorMsg = (state as UiSecurityState.Error).errMsg}
-        is UiSecurityState.Success -> {
-            onRegistrationSuccess()
-        }
+    LaunchedEffect(email, password, repeatPassword) {
+        viewModel.refreshRegisterState()
     }
 
     Column(
@@ -67,7 +61,6 @@ fun RegisterScreen(
             .padding(horizontal = 24.dp)
             .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
-
     ) {
         CustomTextInput(
             value = email,
@@ -86,6 +79,7 @@ fun RegisterScreen(
             WarnTextField(stringResource(R.string.email_wrong_format))
             return
         }
+
         CustomTextInput(
             value = password,
             onValueChange = {
@@ -123,26 +117,46 @@ fun RegisterScreen(
             return
         }
 
-        errorMsg?.let { error ->
-            WarnTextField(notificationText = error)
+        if (email.isNotEmpty() && !viewModel.isValidEmail(email)) {
+            WarnTextField(stringResource(R.string.email_wrong_format))
         }
 
-        TextButton(
-            colors = ButtonDefaults.textButtonColors(
-                containerColor = BottomSheetPeach
-            ),
-            onClick = {
-                isRegistering = true
-                viewModel.register(email, password)
-            }) {
+        if (password.isNotEmpty() && password.length < 6) {
+            WarnTextField(stringResource(R.string.register_password_warning))
+        }
 
+        if (repeatPassword.isNotEmpty() && password != repeatPassword) {
+            WarnTextField(stringResource(R.string.passwords_not_equals_warning))
+        }
+
+        when (state) {
+            is UiSecurityState.Error -> {
+                WarnTextField((state as UiSecurityState.Error).errMsg)
+            }
+            is UiSecurityState.Loading -> {
+
+            }
+            else -> {  }
+        }
+
+        val isValid = email.isNotEmpty() &&
+                viewModel.isValidEmail(email) &&
+                password.length >= 6 &&
+                repeatPassword.isNotEmpty() &&
+                password == repeatPassword
+
+        TextButton(
+            enabled = isValid && state !is UiSecurityState.Loading,
+            colors = ButtonDefaults.textButtonColors(containerColor = BottomSheetPeach),
+            onClick = {
+                viewModel.register(email, password)
+            }
+        ) {
             Text(
                 text = stringResource(R.string.register),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-
-
     }
 }
 

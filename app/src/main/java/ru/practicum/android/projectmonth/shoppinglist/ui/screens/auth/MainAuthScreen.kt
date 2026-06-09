@@ -68,14 +68,13 @@ fun AuthViewPager(navController: NavController) {
 
     val toastMsg = stringResource(R.string.register_success)
 
-    val onRegistrationSuccess: () -> Unit = {
+    val onRegistrationSuccess: (String) -> Unit = { email ->
         Toast.makeText(
             context,
-            toastMsg,
+            "$toastMsg $email",
             Toast.LENGTH_LONG
         ).show()
 
-        // Переключаемся на 0-ю вкладку (Login)
         coroutineScope.launch {
             pagerState.animateScrollToPage(0)
         }

@@ -80,6 +80,10 @@ open class AuthViewModel(
 
     }
 
+    fun refreshRegisterState() {
+        _registerState.value = UiSecurityState.Default
+
+    }
 
 
 }
