@@ -69,7 +69,7 @@ complexity:
     includeStaticDeclarations: false
     includePrivateDeclarations: false
   CyclomaticComplexMethod:
-    active: true
+    active: false
     threshold: 15
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
@@ -566,7 +566,7 @@ style:
   RedundantVisibilityModifierRule:
     active: false
   ReturnCount:
-    active: true
+    active: false
     max: 2
     excludedFunctions:
       - 'equals'

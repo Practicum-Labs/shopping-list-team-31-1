@@ -58,7 +58,10 @@ class AuthRepositoryImpl(
             val respBody = response.body()?.string()
             return SecurityState.SuccessRecoveryPasswd(respBody?: RECOVERY_REQUEST_SENT)
         } else {
-            return SecurityState.ErrorRecoveryPasswd(message = response.errorBody()?.string(), errCode = response.code())
+            return SecurityState.ErrorRecoveryPasswd(
+                message = response.errorBody()?.string(),
+                errCode = response.code()
+            )
         }
     }
 

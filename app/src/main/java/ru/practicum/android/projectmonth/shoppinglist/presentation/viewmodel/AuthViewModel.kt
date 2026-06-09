@@ -12,7 +12,10 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCred
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState
-import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.*
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.Default
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.Error
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.Loading
+import ru.practicum.android.projectmonth.shoppinglist.presentation.state.UiSecurityState.Success
 
 open class AuthViewModel(
     val interactor : AuthInteractor
