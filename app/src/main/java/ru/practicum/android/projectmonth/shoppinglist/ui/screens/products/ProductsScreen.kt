@@ -67,13 +67,15 @@ fun ProductsScreen(
 
     val uiState = viewModel.uiState
 
-    val menuSheetState = rememberModalBottomSheetState()
-    var showMenu by remember { mutableStateOf(false) }
-    var currentSort by remember { mutableStateOf(SortType.NONE) }
-
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
     var newProductUnit by remember { mutableStateOf("") }
+
+    var showMenu by remember { mutableStateOf(false) }
+    var showDeleteAllDialog by remember { mutableStateOf(false) }
+
+    val menuSheetState = rememberModalBottomSheetState()
+    var currentSort by remember { mutableStateOf(SortType.NONE) }
 
     var productToChange by remember { mutableStateOf<Product?>(null) }
     var productToDelete by remember { mutableStateOf<Product?>(null) }
@@ -225,7 +227,7 @@ fun ProductsScreen(
         // Вызов диалога удаления товара
         productToDelete?.let { product ->
             DeleteConfirmationDialog(
-                title = stringResource(R.string.products_remove, product.name.trim()),
+                title = stringResource(R.string.products_remove_dialog, product.name.trim()),
                 onDismiss = {
                     productToDelete = null
                 },
@@ -244,9 +246,33 @@ fun ProductsScreen(
                 currentSortType = currentSort,
                 onSortTypeSelected = { selectedSort ->
                     currentSort = selectedSort
+
+                    if (selectedSort == SortType.ALPHABETICAL) {
+                        viewModel.sortProductsAlphabetically()
+                    }
                 },
-                onDeleteAllClick = { },
-                onClearPurchasedClick = {  }
+                onDeleteAllClick = {
+                    showMenu = false
+                    showDeleteAllDialog = true
+                },
+                onClearPurchasedClick = {
+                    showMenu = false
+                    viewModel.clearPurchasedProduct()
+                }
+            )
+        }
+
+        // Вызов диалога удаления всех товаров
+        if (showDeleteAllDialog) {
+            DeleteConfirmationDialog(
+                title = stringResource(R.string.products_delete_all_dialog),
+                onDismiss = {
+                    showDeleteAllDialog = false
+                },
+                onConfirm = {
+                    viewModel.deleteAllProducts()
+                    showDeleteAllDialog = false
+                }
             )
         }
     }

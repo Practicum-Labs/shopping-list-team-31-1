@@ -13,5 +13,5 @@ interface ProductInteractor {
 
     fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
     suspend fun removeProduct(productId: Long)
-
+    suspend fun deleteShoppingListProducts(shoppingListId: Long)
 }

@@ -62,7 +62,7 @@ fun NewProductBottomSheet(
         selectedUnit = productToChange?.measureUnit ?: ""
 
         onNameChange(productName)
-        onNumberChange(currentNumber)
+        onNumberChange(productToChange?.number ?: 0f)
         onUnitChange(selectedUnit)
     }
 

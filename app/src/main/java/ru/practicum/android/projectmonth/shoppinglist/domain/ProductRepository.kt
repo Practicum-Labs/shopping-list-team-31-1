@@ -13,4 +13,5 @@ interface ProductRepository {
 
     fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
     suspend fun deleteProduct(productId: Long)
+    suspend fun deleteShoppingListProducts(shoppingListId: Long)
 }

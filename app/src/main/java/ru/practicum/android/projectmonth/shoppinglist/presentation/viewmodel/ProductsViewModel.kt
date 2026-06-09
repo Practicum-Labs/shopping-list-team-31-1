@@ -87,6 +87,37 @@ class ProductsViewModel(
         viewModelScope.launch {
             productInteractor.removeProduct(productId)
         }
-        getProducts()
+    }
+
+    fun clearPurchasedProduct() {
+        val currentState = uiState
+
+        if (currentState is ProductsState.Content) {
+            val itemsToDelete = currentState.data.filter{ it.checked }
+
+            if (itemsToDelete.isNotEmpty()) {
+                viewModelScope.launch {
+                    itemsToDelete.forEach { product ->
+                        productInteractor.removeProduct(product.id)
+                    }
+
+                    getProducts()
+                }
+            }
+        }
+    }
+
+    fun deleteAllProducts() {
+        viewModelScope.launch {
+            productInteractor.deleteShoppingListProducts(shoppingListId)
+        }
+    }
+
+    fun sortProductsAlphabetically() {
+        val currentState = uiState
+
+        if (currentState is ProductsState.Content) {
+            uiState = currentState.copy(data = currentState.data.sortedBy { it.name })
+        }
     }
 }

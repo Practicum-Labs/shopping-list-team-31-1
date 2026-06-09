@@ -64,4 +64,10 @@ class ProductRepositoryImpl(
             .productDao()
             .deleteById(productId)
     }
+
+    override suspend fun deleteShoppingListProducts(shoppingListId: Long) {
+        appDatabase
+            .productDao()
+            .deleteByShoppingListId(shoppingListId)
+    }
 }

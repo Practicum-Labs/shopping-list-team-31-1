@@ -36,4 +36,8 @@ class ProductInteractorImpl(val repository: ProductRepository) : ProductInteract
     override suspend fun removeProduct(productId: Long) {
         repository.deleteProduct(productId)
     }
+
+    override suspend fun deleteShoppingListProducts(shoppingListId: Long) {
+        repository.deleteShoppingListProducts(shoppingListId)
+    }
 }
