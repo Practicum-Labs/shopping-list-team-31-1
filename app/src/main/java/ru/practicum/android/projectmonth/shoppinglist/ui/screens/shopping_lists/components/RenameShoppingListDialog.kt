@@ -76,7 +76,7 @@ fun RenameShoppingListDialog(
 @Composable
 fun RenameShoppingListDialogPreview() {
     RenameShoppingListDialog(
-        shoppingList = ShoppingList(1, "Продукты", "ic_default", emptyList()),
+        shoppingList = ShoppingList(1, "Продукты", "ic_default", emptyList(), 0),
         onDismiss = {},
         onConfirm = {}
     )

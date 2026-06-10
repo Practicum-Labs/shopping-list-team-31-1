@@ -42,7 +42,8 @@ class ShoppingListsViewModel(
                     id = 0L,
                     name = name,
                     iconRes = DEFAULT_SHOPPING_LIST_ICON,
-                    products = emptyList()
+                    products = emptyList(),
+                    sortType = 0
                 )
             ).collect {
                 getShoppingLists()

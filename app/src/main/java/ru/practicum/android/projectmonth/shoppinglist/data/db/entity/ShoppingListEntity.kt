@@ -11,6 +11,7 @@ data class ShoppingListEntity (
     val id: Long = 0,
     val name: String,
     @ColumnInfo("icon_res")
-    val iconRes: String
-
+    val iconRes: String,
+    @ColumnInfo("sort_type")
+    val sortType: Int = 0
 )

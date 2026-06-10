@@ -44,7 +44,6 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedM
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsMenu
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SortType
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
@@ -67,6 +66,7 @@ fun ProductsScreen(
     )
 
     val uiState = viewModel.uiState
+    val currentSortType = viewModel.currentSortType
 
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
@@ -76,7 +76,6 @@ fun ProductsScreen(
     var showDeleteAllDialog by remember { mutableStateOf(false) }
 
     val menuSheetState = rememberModalBottomSheetState()
-    var currentSort by remember { mutableStateOf(SortType.NONE) }
 
     var productToChange by remember { mutableStateOf<Product?>(null) }
     var productToDelete by remember { mutableStateOf<Product?>(null) }
@@ -244,13 +243,9 @@ fun ProductsScreen(
             ProductsMenu(
                 sheetState = menuSheetState,
                 onDismissRequest = { showMenu = false },
-                currentSortType = currentSort,
+                currentSortType = currentSortType,
                 onSortTypeSelected = { selectedSort ->
-                    currentSort = selectedSort
-
-                    if (selectedSort == SortType.ALPHABETICAL) {
-                        viewModel.sortProductsAlphabetically()
-                    }
+                    viewModel.setSortType(selectedSort)
                 },
                 onDeleteAllClick = {
                     showMenu = false

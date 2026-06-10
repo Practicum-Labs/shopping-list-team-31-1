@@ -32,18 +32,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.SortType
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.RegularBrown
-
-// Варианты сортировки
-enum class SortType {
-    ALPHABETICAL,
-    CUSTOM,
-    NONE
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

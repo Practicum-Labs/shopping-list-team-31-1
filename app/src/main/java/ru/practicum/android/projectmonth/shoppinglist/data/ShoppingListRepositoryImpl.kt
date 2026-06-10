@@ -21,9 +21,8 @@ class ShoppingListRepositoryImpl(
             .map { entities -> entities.mapNotNull { shoppingListDbConverter.map(it) } }
 
 
-    override fun getShoppingListById(id: Long): Flow<ShoppingList?> = flow {
-        emitAll( appDatabase.shoppingListDao().getById(id).map { shoppingListDbConverter.map(it) })
-    }
+    override fun getShoppingListById(id: Long): Flow<ShoppingList?> =
+        appDatabase.shoppingListDao().getById(id).map { shoppingListDbConverter.map(it) }
 
     override fun updateShoppingList(
         id: Long,

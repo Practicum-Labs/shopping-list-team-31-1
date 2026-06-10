@@ -7,20 +7,31 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.SortType
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ProductInteractor
+import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ShoppingListInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ProductsState
+import kotlin.collections.sortedBy
 
 class ProductsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val productInteractor: ProductInteractor
+    private val productInteractor: ProductInteractor,
+    private val shoppingListInteractor: ShoppingListInteractor
 ) : ViewModel() {
 
     val shoppingListId: Long = checkNotNull(savedStateHandle["shoppingListId"])
 
     var uiState by mutableStateOf<ProductsState>(ProductsState.Empty)
         private set
+
+    var currentSortType by mutableStateOf(SortType.NONE)
+        private set
+
+    private var shoppingList: ShoppingList? = null
 
     private var productsJob: Job? = null
 
@@ -30,10 +41,19 @@ class ProductsViewModel(
 
     fun getProducts() {
         productsJob?.cancel()
+
         productsJob = viewModelScope.launch {
-            productInteractor.getProductsByShoppingListId(shoppingListId).collect { result ->
-                uiState = if (result.isNotEmpty()) {
-                    ProductsState.Content(data = result)
+            val shoppingListFlow = shoppingListInteractor.getShoppingListById(shoppingListId)
+            val productsFlow = productInteractor.getProductsByShoppingListId(shoppingListId)
+
+            combine(shoppingListFlow, productsFlow) { list, products ->
+                shoppingList = list
+                currentSortType = SortType.entries.find { it.index == list?.sortType } ?: SortType.NONE
+
+                applySort(products)
+            }.collect { sortedProducts ->
+                uiState = if (sortedProducts.isNotEmpty()) {
+                    ProductsState.Content(data = sortedProducts)
                 } else {
                     ProductsState.Empty
                 }
@@ -98,8 +118,6 @@ class ProductsViewModel(
                     itemsToDelete.forEach { product ->
                         productInteractor.removeProduct(product.id)
                     }
-
-                    getProducts()
                 }
             }
         }
@@ -111,11 +129,33 @@ class ProductsViewModel(
         }
     }
 
-    fun sortProductsAlphabetically() {
+    fun setSortType(sortType: SortType) {
+        currentSortType = sortType
+
         val currentState = uiState
 
         if (currentState is ProductsState.Content) {
-            uiState = currentState.copy(data = currentState.data.sortedBy { it.name })
+            uiState = currentState.copy(data = applySort(currentState.data))
+        }
+
+        updateShoppingListSortType()
+    }
+
+    private fun updateShoppingListSortType() {
+        shoppingList?.let { list ->
+            viewModelScope.launch {
+                shoppingListInteractor.updateShoppingList(
+                    id = shoppingListId,
+                    shoppingList = list.copy(sortType = currentSortType.index)
+                ).collect {  }
+            }
+        }
+    }
+
+    private fun applySort(products: List<Product>): List<Product> {
+        return when (currentSortType) {
+            SortType.ALPHABETICAL -> products.sortedBy { it.name.lowercase() }
+            else -> products
         }
     }
 }
