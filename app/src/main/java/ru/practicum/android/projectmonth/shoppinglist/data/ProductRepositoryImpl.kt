@@ -1,11 +1,5 @@
 package ru.practicum.android.projectmonth.shoppinglist.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import ru.practicum.android.projectmonth.shoppinglist.data.converter.db.ProductDbConverter
 import ru.practicum.android.projectmonth.shoppinglist.data.db.AppDatabase
 import ru.practicum.android.projectmonth.shoppinglist.domain.ProductRepository
@@ -13,50 +7,36 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 
 class ProductRepositoryImpl(
     val appDatabase: AppDatabase,
-    val productDbConverter: ProductDbConverter
+    val productDbConverter: ProductDbConverter,
 ) : ProductRepository {
 
-    override fun getAllProducts(): Flow<List<Product>> =
-        appDatabase.productDao().getAll()
-            .map { entities -> entities.mapNotNull { productDbConverter.map(it) } }
-
-
-    override fun getProductById(id: Long): Flow<Product?> = flow {
-        emitAll(appDatabase.productDao().getById(id).map { productDbConverter.map(it) })
+    override suspend fun getAllProducts(login: String): List<Product> {
+        return appDatabase.productDao().getAll(login).map { productDbConverter.map(it) }
     }
 
-    override fun updateProduct(
-        id: Long,
-        product: Product
-    ): Flow<Product> = flow {
+    override suspend fun getProductById(id: Long): Product {
+        return productDbConverter.map(appDatabase.productDao().getById(id))
+    }
+
+    override suspend fun updateProduct(id: Long, product: Product): Product {
         appDatabase.productDao().update(productDbConverter.map(product))
-        emit(
-            appDatabase.productDao().getById(product.id)
-            .mapNotNull { productDbConverter.map(it) }
-            .first())
+        return productDbConverter.map(appDatabase.productDao().getById(product.id))
     }
 
-    override fun saveNewProductAndReturnId(product: Product): Flow<Long> = flow {
-        emit(appDatabase.productDao().insert(productDbConverter.map(product)))
+    override suspend fun saveNewProductAndReturnId(product: Product): Long {
+        return appDatabase.productDao().insert(productDbConverter.map(product))
     }
 
-    override fun saveNewProduct(product: Product): Flow<Product> = flow {
+    override suspend fun saveNewProduct(product: Product): Product {
         val id = appDatabase.productDao().insert(productDbConverter.map(product))
-        emitAll(
-            appDatabase.productDao().getById(id)
-                .mapNotNull { productDbConverter.map(it) }
-        )
+        return productDbConverter.map(appDatabase.productDao().getById(id))
     }
 
-    override fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
+    override suspend fun getProductsByShoppingListId(id: Long): List<Product> {
         return appDatabase
             .productDao()
             .getProductsByShoppingListId(id)
-            .map { entities ->
-                entities.mapNotNull { productEntity ->
-                    productDbConverter.map(productEntity)
-                }
-            }
+            .map {productDbConverter.map(it)}
     }
 
     override suspend fun deleteProduct(productId: Long) {

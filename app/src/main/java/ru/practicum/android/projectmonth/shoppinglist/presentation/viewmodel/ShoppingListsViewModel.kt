@@ -7,13 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
+import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ShoppingListInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ShoppingListsState
 
 private const val DEFAULT_SHOPPING_LIST_ICON = "ic_shopping_list_default"
 
 class ShoppingListsViewModel(
-    private val shoppingListInteractor: ShoppingListInteractor
+    private val shoppingListInteractor: ShoppingListInteractor,
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     var uiState by mutableStateOf<ShoppingListsState>(ShoppingListsState.Empty)
@@ -24,13 +26,13 @@ class ShoppingListsViewModel(
     }
 
     fun getShoppingLists() {
+        uiState = ShoppingListsState.Empty
         viewModelScope.launch {
-            shoppingListInteractor.getAllShoppingLists().collect { result ->
-                if (result.isNotEmpty()) {
-                    uiState = ShoppingListsState.Content(result)
-                } else {
-                    uiState = ShoppingListsState.Empty
-                }
+            val result = shoppingListInteractor.getAllShoppingLists()
+            if (result.isNotEmpty()) {
+                uiState = ShoppingListsState.Content(result)
+            } else {
+                uiState = ShoppingListsState.Empty
             }
         }
     }
@@ -42,13 +44,15 @@ class ShoppingListsViewModel(
                     id = 0L,
                     name = name,
                     iconRes = DEFAULT_SHOPPING_LIST_ICON,
-                    products = emptyList()
+                    products = emptyList(),
+                    login = authInteractor.currentUser()
                 )
             ).collect {
                 getShoppingLists()
             }
         }
     }
+
     fun deleteShoppingList(shoppingList: ShoppingList) {
         viewModelScope.launch {
             shoppingListInteractor.deleteShoppingList(shoppingList)

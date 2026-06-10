@@ -11,7 +11,7 @@ import ru.practicum.android.projectmonth.shoppinglist.data.network.AuthApiServic
 import ru.practicum.android.projectmonth.shoppinglist.domain.AuthRepository
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.LoginCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCredentials
-import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
+import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.SecurityState
 
 class AuthRepositoryImpl(
     val sharedPreferences: SharedPreferences,
@@ -63,6 +63,10 @@ class AuthRepositoryImpl(
                 errCode = response.code()
             )
         }
+    }
+
+    override fun currentUser(): String {
+        return sharedPreferences.getString(LOGIN, "") ?: ""
     }
 
     override fun refreshAccessToken(): Flow<SecurityState> = flow {

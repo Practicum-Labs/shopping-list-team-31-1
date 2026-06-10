@@ -26,6 +26,15 @@ fun ShoppingListsTopBar(
                 style = MaterialTheme.typography.headlineMedium
             )
         },
+        navigationIcon = {
+            TopBarButton(
+                iconResId = R.drawable.ic_arrow_back,
+                onClick = {
+                    navController.navigateUp()
+                }
+            )
+        },
+
         actions = {
             TopBarButton(R.drawable.ic_search)
             TopBarButton(R.drawable.ic_delete,

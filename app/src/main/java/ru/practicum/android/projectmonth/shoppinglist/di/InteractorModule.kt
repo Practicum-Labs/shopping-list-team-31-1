@@ -10,10 +10,10 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ShoppingLi
 
 val interactorModule = module {
     single<ProductInteractor> {
-        ProductInteractorImpl(get())
+        ProductInteractorImpl(get(), get())
     }
     single<ShoppingListInteractor> {
-        ShoppingListInteractorImpl(get())
+        ShoppingListInteractorImpl(get(), get())
     }
     single<AuthInteractor> {
         AuthInteractorImpl(get())

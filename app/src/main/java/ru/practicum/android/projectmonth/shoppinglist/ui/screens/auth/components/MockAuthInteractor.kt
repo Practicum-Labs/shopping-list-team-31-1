@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.LoginCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
-import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
+import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.SecurityState
 
 class MockAuthInteractor : AuthInteractor {
     override fun authenticate(loginCredentials: LoginCredentials): Flow<SecurityState> = flow {
@@ -18,6 +18,10 @@ class MockAuthInteractor : AuthInteractor {
 
     override fun recoveryPassword(email: String): Flow<SecurityState> = flow {
         emit(SecurityState.Default)
+    }
+
+    override suspend fun currentUser(): String {
+        return "user@test.com"
     }
 
 }

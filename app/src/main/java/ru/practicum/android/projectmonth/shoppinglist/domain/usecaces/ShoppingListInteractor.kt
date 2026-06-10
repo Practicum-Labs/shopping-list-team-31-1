@@ -5,10 +5,9 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 
 interface ShoppingListInteractor {
 
-    fun getAllShoppingLists(): Flow<List<ShoppingList>>
+    suspend fun getAllShoppingLists(): List<ShoppingList>
     fun getShoppingListById(id: Long): Flow<ShoppingList?>
     fun updateShoppingList(id: Long, shoppingList: ShoppingList): Flow<ShoppingList>
-    fun saveNewShoppingListAndReturnId(shoppingList: ShoppingList): Flow<Long>
     fun saveNewShoppingList(shoppingList: ShoppingList): Flow<ShoppingList>
     suspend fun deleteShoppingList(shoppingList: ShoppingList)
     suspend fun deleteAllShoppingLists()
