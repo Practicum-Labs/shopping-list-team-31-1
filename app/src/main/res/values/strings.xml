@@ -63,4 +63,24 @@
     <string name="list_name_hint">Введите название</string>
     <string name="rename">Переименовать</string>
 
+    <!-- Поиск -->
+    <string name="search_hint">Поиск списков</string>
+    <string name="close_search">Закрыть поиск</string>
+    <string name="search_not_found_header">Мы не смогли найти то,\nчто вы искали</string>
+    <string name="search_not_found_message">Попробуйте изменить запрос\nили проверить написание</string>
+
+    <!-- Дублирование списка -->
+    <string name="copy_list">Копировать список</string>
+    <string name="list_copied">Список скопирован</string>
+
+    <!-- Редактирование/удаление списка - вынос строк -->
+    <string name="edit_list">Редактировать список</string>
+    <string name="delete_list">Удалить список</string>
+    <string name="attention_icon">Внимание</string>
+
+
+
+
+
+
 </resources>
