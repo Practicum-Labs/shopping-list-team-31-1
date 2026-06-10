@@ -5,5 +5,6 @@ data class ShoppingList(
     val name: String,
     val iconRes: String,
     val products: List<Product>,
-    val sortType: Int
+    val sortType: Int,
+    val login: String = ""
 )

@@ -32,6 +32,24 @@
     <string name="products_delete_all_dialog">Удалить все купленные товары?</string>
 
     <string name="measure_placeholder">Единицы</string>
+    <string name="login">Авторизация</string>
+    <string name="register">Регистрация</string>
+
+    <string name="email">email</string>
+    <string name="password">пароль</string>
+    <string name="enter_email">Введите email</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="come_up_with_a_password">Придумайте пароль</string>
+    <string name="enter_in_shoppinglist">Войти</string>
+    <string name="password_recovery">Не помню пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="register_password_warning">Пароль должен содержать не менее 6-ти символов</string>
+    <string name="passwords_not_equals_warning">Введенные пароли не совпадают</string>
+    <string name="email_wrong_format">Не верный формат email</string>
+    <string name="clear_text">очистить</string>
+    <string name="recover_password">Сбросить пароль</string>
+    <string name="register_success">Регистрация прошла успешно! Теперь войдите в аккаунт</string>
+    <string name="recovery_password_success">Запрос отправлен. Ожидайте новый пароль на %s</string>
 
     <string-array name="measure_units">
         <item>л</item>

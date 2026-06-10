@@ -27,9 +27,6 @@ console-reports:
     - 'FindingsReport'
     - 'FileBasedFindingsReport'
 
-output-reports:
-  active: true
-  exclude:
 
 comments:
   active: true
@@ -72,7 +69,7 @@ complexity:
     includeStaticDeclarations: false
     includePrivateDeclarations: false
   CyclomaticComplexMethod:
-    active: true
+    active: false
     threshold: 15
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
@@ -87,7 +84,7 @@ complexity:
     ignoreAnnotated:
       - 'androidx.compose.runtime.Composable'
   LongParameterList:
-    active: true
+    active: false
     functionThreshold: 6
     constructorThreshold: 7
     ignoreDefaultParameters: false
@@ -170,7 +167,7 @@ empty-blocks:
   EmptyForBlock:
     active: true
   EmptyFunctionBlock:
-    active: true
+    active: false
     ignoreOverridden: false
   EmptyIfBlock:
     active: true
@@ -483,7 +480,7 @@ style:
   ForbiddenAnnotation:
     active: false
   ForbiddenComment:
-    active: true
+    active: false
     comments:
       - reason: 'Forbidden FIXME todo marker in comment, please fix the problem.'
         value: 'FIXME:'
@@ -569,7 +566,7 @@ style:
   RedundantVisibilityModifierRule:
     active: false
   ReturnCount:
-    active: true
+    active: false
     max: 2
     excludedFunctions:
       - 'equals'

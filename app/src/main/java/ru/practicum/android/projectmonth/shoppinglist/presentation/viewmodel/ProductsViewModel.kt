@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
+import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.SortType
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ProductInteractor
@@ -20,7 +21,8 @@ import kotlin.collections.sortedBy
 class ProductsViewModel(
     savedStateHandle: SavedStateHandle,
     private val productInteractor: ProductInteractor,
-    private val shoppingListInteractor: ShoppingListInteractor
+    private val shoppingListInteractor: ShoppingListInteractor,
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     val shoppingListId: Long = checkNotNull(savedStateHandle["shoppingListId"])
@@ -70,7 +72,8 @@ class ProductsViewModel(
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,
-                    shoppingListId = shoppingListId
+                    shoppingListId = shoppingListId,
+                    login = authInteractor.currentUser()
                 )
             ).collect { }
         }
@@ -95,7 +98,8 @@ class ProductsViewModel(
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,
-                    shoppingListId = shoppingListId
+                    shoppingListId = shoppingListId,
+                    login = authInteractor.currentUser()
                 )
             ).collect { }
         }

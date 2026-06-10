@@ -8,23 +8,25 @@ class ShoppingListDbConverter (
     val productDbConverter: ProductDbConverter
 ) {
 
-    fun map(shoppingListEntity: ShoppingListEntity?): ShoppingList? {
-        if (shoppingListEntity == null) return null
+    fun map(shoppingListEntity: ShoppingListEntity): ShoppingList {
         return ShoppingList(
             id = shoppingListEntity.id,
             name = shoppingListEntity.name,
             iconRes = shoppingListEntity.iconRes,
             products = emptyList(),
             sortType = shoppingListEntity.sortType
+            products = emptyList(),
+            login = shoppingListEntity.login
         )
     }
 
-    fun map(shoppingList: ShoppingList): ShoppingListEntity {
+    fun map(shoppingList: ShoppingList, login: String): ShoppingListEntity {
         return ShoppingListEntity(
             id = shoppingList.id,
             name = shoppingList.name,
             iconRes = shoppingList.iconRes,
-            sortType = shoppingList.sortType
+            sortType = shoppingList.sortType,
+            login = login
         )
     }
 
@@ -32,14 +34,15 @@ class ShoppingListDbConverter (
         if (shoppingListWithProducts == null) return null
 
         val products = shoppingListWithProducts.products
-            .mapNotNull { productDbConverter.map(it) }
+            .map { productDbConverter.map(it) }
 
         return ShoppingList(
             id = shoppingListWithProducts.shoppingList.id,
             name = shoppingListWithProducts.shoppingList.name,
             iconRes = shoppingListWithProducts.shoppingList.iconRes,
             products = products,
-            sortType = shoppingListWithProducts.shoppingList.sortType
+            sortType = shoppingListWithProducts.shoppingList.sortType,
+            login = shoppingListWithProducts.shoppingList.login
         )
     }
 }
