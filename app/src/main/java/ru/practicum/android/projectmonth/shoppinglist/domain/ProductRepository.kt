@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.domain
 
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 
 interface ProductRepository {
@@ -10,7 +11,7 @@ interface ProductRepository {
     suspend fun saveNewProductAndReturnId(product: Product): Long
     suspend fun saveNewProduct(product: Product): Product
 
-    suspend fun getProductsByShoppingListId(id: Long): List<Product>
+    suspend fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
     suspend fun deleteProduct(productId: Long)
     suspend fun deleteShoppingListProducts(shoppingListId: Long)
 }

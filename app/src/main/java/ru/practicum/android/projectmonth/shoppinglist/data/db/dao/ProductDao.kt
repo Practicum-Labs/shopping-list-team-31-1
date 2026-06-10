@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductEntity
 
 @Dao
@@ -15,7 +16,7 @@ interface ProductDao {
     fun getAll(login: String): List<ProductEntity>
 
     @Query("SELECT * FROM product WHERE shopping_list_id = :shoppingListId")
-    fun getProductsByShoppingListId(shoppingListId: Long): List<ProductEntity>
+    fun getProductsByShoppingListId(shoppingListId: Long): Flow<List<ProductEntity>>
 
     @Query("SELECT * FROM product WHERE id = :id")
     fun getById(id: Long): ProductEntity
