@@ -23,6 +23,7 @@ data class ProductEntity (
     val checked: Boolean,
     val number: Float,
     @ColumnInfo("measure_unit")
-    val measureUnit: String
+    val measureUnit: String,
+    val login: String
 
 )

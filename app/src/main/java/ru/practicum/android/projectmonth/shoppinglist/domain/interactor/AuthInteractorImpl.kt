@@ -8,7 +8,7 @@ import ru.practicum.android.projectmonth.shoppinglist.domain.AuthRepository
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.LoginCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.RegisterCredentials
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
-import ru.practicum.android.projectmonth.shoppinglist.presentation.state.SecurityState
+import ru.practicum.android.projectmonth.shoppinglist.data.network.dto.SecurityState
 
 class AuthInteractorImpl(
     val repository: AuthRepository
@@ -31,5 +31,9 @@ class AuthInteractorImpl(
         emit(respState)
     }
         .flowOn(Dispatchers.IO)
+
+    override suspend fun currentUser(): String {
+        return repository.currentUser()
+    }
 
 }

@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.di
 
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.AuthViewModel
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ProductsViewModel
@@ -7,14 +8,7 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.Sho
 
 val viewModelModule = module {
 
-    single {
-        ShoppingListsViewModel(get())
-    }
-
-    single {
-        ProductsViewModel(get(), get())
-    }
-    single {
-        AuthViewModel(get())
-    }
+    viewModel { ShoppingListsViewModel(get(), get()) }
+    viewModel { ProductsViewModel(get(), get(), get()) }
+    viewModel { AuthViewModel(get()) }
 }

@@ -6,5 +6,7 @@ data class Product(
     val checked: Boolean,
     val number: Float,
     val measureUnit: String,
-    val shoppingListId: Long
+    val shoppingListId: Long,
+    val login: String
+
 )

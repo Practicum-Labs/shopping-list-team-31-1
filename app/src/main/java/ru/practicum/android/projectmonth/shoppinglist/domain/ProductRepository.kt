@@ -1,16 +1,15 @@
 package ru.practicum.android.projectmonth.shoppinglist.domain
 
-import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 
 interface ProductRepository {
 
-    fun getAllProducts(): Flow<List<Product>>
-    fun getProductById(id: Long): Flow<Product?>
-    fun updateProduct(id: Long, product: Product): Flow<Product>
-    fun saveNewProductAndReturnId(product: Product): Flow<Long>
-    fun saveNewProduct(product: Product): Flow<Product>
+    suspend fun getAllProducts(login: String): List<Product>
+    suspend fun getProductById(id: Long): Product
+    suspend fun updateProduct(id: Long, product: Product): Product
+    suspend fun saveNewProductAndReturnId(product: Product): Long
+    suspend fun saveNewProduct(product: Product): Product
 
-    fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
+    suspend fun getProductsByShoppingListId(id: Long): List<Product>
     suspend fun deleteProduct(productId: Long)
 }

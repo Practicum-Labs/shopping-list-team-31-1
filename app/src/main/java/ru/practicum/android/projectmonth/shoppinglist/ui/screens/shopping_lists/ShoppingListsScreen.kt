@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +60,14 @@ fun ShoppingListsScreen(
     var showDeleteAllDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf<ShoppingList?>(null) }
     var showRenameDialog by remember { mutableStateOf<ShoppingList?>(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getShoppingLists()
+    }
+
+    BackHandler {
+        navController.navigateUp()
+    }
 
     Scaffold(
         topBar = {

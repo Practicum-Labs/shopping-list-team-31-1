@@ -1,4 +1,4 @@
-package ru.practicum.android.projectmonth.shoppinglist.presentation.state
+package ru.practicum.android.projectmonth.shoppinglist.data.network.dto
 
 sealed interface SecurityState {
 
