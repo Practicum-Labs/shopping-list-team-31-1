@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ProductInteractor
@@ -21,12 +22,15 @@ class ProductsViewModel(
     var uiState by mutableStateOf<ProductsState>(ProductsState.Empty)
         private set
 
+    private var productsJob: Job? = null
+
     init {
         getProducts()
     }
 
     fun getProducts() {
-        viewModelScope.launch {
+        productsJob?.cancel()
+        productsJob = viewModelScope.launch {
             productInteractor.getProductsByShoppingListId(shoppingListId).collect { result ->
                 uiState = if (result.isNotEmpty()) {
                     ProductsState.Content(data = result)
@@ -48,9 +52,7 @@ class ProductsViewModel(
                     measureUnit = measureUnit,
                     shoppingListId = shoppingListId
                 )
-            ).collect {
-                getProducts()
-            }
+            ).collect { }
         }
     }
 
@@ -59,9 +61,7 @@ class ProductsViewModel(
             productInteractor.updateProduct(
                 id = product.id,
                 product = product.copy(checked = isChecked)
-            ).collect {
-                getProducts()
-            }
+            ).collect { }
         }
     }
 
@@ -77,9 +77,7 @@ class ProductsViewModel(
                     measureUnit = measureUnit,
                     shoppingListId = shoppingListId
                 )
-            ).collect {
-                getProducts()
-            }
+            ).collect { }
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -287,20 +288,20 @@ fun ProductsContent(
 ) {
     LazyColumn {
         items(
-            count = products.size,
-            key = { index -> products[index].id }
-        ) { index ->
+            items = products,
+            key = { it.id }
+        ) { product ->
 
             SwipeableProductItem(
-                item = products[index],
+                item = product,
                 onCheckedChange = { isChecked ->
-                    onCheckedChange(products[index], isChecked)
+                    onCheckedChange(product, isChecked)
                 },
                 onProductChange = {
-                    onProductChange(products[index])
+                    onProductChange(product)
                 },
                 onProductDelete = {
-                    onProductDelete(products[index])
+                    onProductDelete(product)
                 }
             )
 
