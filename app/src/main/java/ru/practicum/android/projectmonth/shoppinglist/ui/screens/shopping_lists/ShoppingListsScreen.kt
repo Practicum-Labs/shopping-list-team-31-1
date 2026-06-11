@@ -28,10 +28,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
@@ -56,86 +58,124 @@ fun ShoppingListsScreen(
     viewModel: ShoppingListsViewModel
 ) {
     val uiState = viewModel.uiState
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val isSearchActive by viewModel.isSearchActive.collectAsStateWithLifecycle()
+
     var showAddingDialog by remember { mutableStateOf(false) }
     var showDeleteAllDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf<ShoppingList?>(null) }
     var showRenameDialog by remember { mutableStateOf<ShoppingList?>(null) }
 
+    val allLists = (uiState as? ShoppingListsState.Content)?.data ?: emptyList()
+    // ✅ ИСПРАВЛЕНО: теперь ищет только с начала слова (startsWith)
+    val filteredLists = if (isSearchActive && searchQuery.isNotEmpty()) {
+        allLists.filter { it.name.startsWith(searchQuery, ignoreCase = true) }
+    } else {
+        allLists
+    }
+
     LaunchedEffect(Unit) {
         viewModel.getShoppingLists()
     }
 
-    BackHandler {
-        navController.navigateUp()
+    BackHandler(enabled = isSearchActive) {
+        viewModel.setIsSearchActive(false)
     }
 
     Scaffold(
         topBar = {
             ShoppingListsTopBar(
                 navController = navController,
+                isSearchActive = isSearchActive,
+                searchQuery = searchQuery,
+                onSearchQueryChange = { viewModel.updateSearchQuery(it) },
+                onSearchClick = { viewModel.setIsSearchActive(true) },
+                onSearchClose = { viewModel.setIsSearchActive(false) },
                 onDeleteAllClick = {
-                    if ((uiState as? ShoppingListsState.Content)?.data?.isNotEmpty() == true) {
+                    if (allLists.isNotEmpty()) {
                         showDeleteAllDialog = true
                     }
                 }
             )
         },
         floatingActionButton = {
-            CustomFab(
-                onClick = {
-                    showAddingDialog = true
-                }
-            )
+            if (!isSearchActive) {
+                CustomFab(
+                    onClick = { showAddingDialog = true }
+                )
+            }
         }
     ) { innerPadding ->
 
-        when (uiState) {
-            is ShoppingListsState.Empty -> {
-                IllustratedMessage(
-                    imageResId = R.drawable.img_shopping_lists,
-                    headerResId = R.string.shopping_lists_screen_header,
-                    messageResId = R.string.shopping_lists_screen_message,
-                    modifier = Modifier.padding(innerPadding)
-                )
-            }
-            is ShoppingListsState.Content -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = innerPadding
-                ) {
-                    items(
-                        count = uiState.data.size,
-                        key = { index -> uiState.data[index].id }
-                    ) { index ->
-                        SwipeableShoppingListItem(
-                            item = uiState.data[index],
-                            onItemClick = { shoppingList ->
-                                navController.navigate(Destination.Products.createRoute(shoppingList.id))
-                            },
-                            onDelete = { shoppingList ->
-                                showDeleteListDialog = shoppingList
-                            },
-                            onRename = { shoppingList ->
-                                showRenameDialog = shoppingList
-                            },
-                            onCopy = { shoppingList ->
-                                // Заглушка - Toast показывается внутри SwipeableShoppingListItem
-                            }
-                        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                uiState is ShoppingListsState.Empty && !isSearchActive -> {
+                    IllustratedMessage(
+                        imageResId = R.drawable.img_shopping_lists,
+                        headerResId = R.string.shopping_lists_screen_header,
+                        messageResId = R.string.shopping_lists_screen_message,
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+                isSearchActive && searchQuery.isNotEmpty() && filteredLists.isEmpty() -> {
+                    IllustratedMessage(
+                        imageResId = R.drawable.img_search_not_found,
+                        headerResId = R.string.search_not_found_header,
+                        messageResId = R.string.search_not_found_message,
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+                filteredLists.isNotEmpty() -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = innerPadding
+                    ) {
+                        items(
+                            count = filteredLists.size,
+                            key = { index -> filteredLists[index].id }
+                        ) { index ->
+                            SwipeableShoppingListItem(
+                                item = filteredLists[index],
+                                onItemClick = { shoppingList ->
+                                    navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                                },
+                                onDelete = { shoppingList ->
+                                    showDeleteListDialog = shoppingList
+                                },
+                                onRename = { shoppingList ->
+                                    showRenameDialog = shoppingList
+                                },
+                                onCopy = { shoppingList ->
+                                    viewModel.copyShoppingList(shoppingList)
+                                }
+                            )
+                        }
                     }
                 }
+                else -> {
+                    Box(modifier = Modifier.padding(innerPadding))
+                }
+            }
+
+            // Затемнение только когда поиск активен и поле пустое
+            if (isSearchActive && searchQuery.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable {
+                            viewModel.setIsSearchActive(false)
+                        }
+                )
             }
         }
 
-        // Диалог создания нового списка
         if (showAddingDialog) {
             NewShoppingListDialog(
-                onDismissRequest = {
-                    showAddingDialog = false
-                },
+                onDismissRequest = { showAddingDialog = false },
                 onConfirm = { newShoppingListName ->
                     if (newShoppingListName.isNotBlank()) {
                         viewModel.newShoppingList(name = newShoppingListName)
@@ -145,7 +185,6 @@ fun ShoppingListsScreen(
             )
         }
 
-        // Диалог удаления всех списков
         if (showDeleteAllDialog) {
             DeleteAllListsDialog(
                 onDismiss = { showDeleteAllDialog = false },
@@ -156,7 +195,6 @@ fun ShoppingListsScreen(
             )
         }
 
-        // Диалог удаления конкретного списка
         showDeleteListDialog?.let { shoppingList ->
             DeleteListDialog(
                 listName = shoppingList.name,
@@ -168,7 +206,6 @@ fun ShoppingListsScreen(
             )
         }
 
-        // Диалог переименования списка
         showRenameDialog?.let { shoppingList ->
             RenameShoppingListDialog(
                 shoppingList = shoppingList,
@@ -198,7 +235,7 @@ fun ShoppingListsItem(
             item.iconRes,
             "drawable",
             context.packageName
-        )
+        ).takeIf { it != 0 } ?: R.drawable.ic_shopping_list_default
     }
 
     Row(
