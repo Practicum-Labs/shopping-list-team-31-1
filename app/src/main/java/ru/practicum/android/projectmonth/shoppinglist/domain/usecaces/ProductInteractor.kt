@@ -9,7 +9,7 @@ interface ProductInteractor {
     fun updateProduct(id: Long, product: Product): Flow<Product>
     fun saveNewProduct(product: Product): Flow<Product>
 
-    fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
+    suspend fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
     suspend fun removeProduct(productId: Long)
-
+    suspend fun deleteShoppingListProducts(shoppingListId: Long)
 }

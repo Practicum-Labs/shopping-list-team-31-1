@@ -9,6 +9,6 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.Sho
 val viewModelModule = module {
 
     viewModel { ShoppingListsViewModel(get(), get(), get()) }
-    viewModel { ProductsViewModel(get(), get(), get()) }
+    viewModel { ProductsViewModel(get(), get(), get(), get()) }
     viewModel { AuthViewModel(get()) }
 }

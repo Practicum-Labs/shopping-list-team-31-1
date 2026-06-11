@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -40,6 +42,7 @@ import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.Pro
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsMenu
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
@@ -63,10 +66,16 @@ fun ProductsScreen(
     )
 
     val uiState = viewModel.uiState
+    val currentSortType = viewModel.currentSortType
 
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
     var newProductUnit by remember { mutableStateOf("") }
+
+    var showMenu by remember { mutableStateOf(false) }
+    var showDeleteAllDialog by remember { mutableStateOf(false) }
+
+    val menuSheetState = rememberModalBottomSheetState()
 
     var productToChange by remember { mutableStateOf<Product?>(null) }
     var productToDelete by remember { mutableStateOf<Product?>(null) }
@@ -100,7 +109,10 @@ fun ProductsScreen(
         BottomSheetScaffold(
             topBar = {
                 ProductsTopBar(
-                    navController = navController
+                    navController = navController,
+                    onMenuClick = {
+                        showMenu = true
+                    }
                 )
 
                 // Затемнение верхней панели
@@ -212,15 +224,50 @@ fun ProductsScreen(
                 }
         )
 
+        // Вызов диалога удаления товара
         productToDelete?.let { product ->
             DeleteConfirmationDialog(
-                title = stringResource(R.string.products_remove, product.name.trim()),
+                title = stringResource(R.string.products_remove_dialog, product.name.trim()),
                 onDismiss = {
                     productToDelete = null
                 },
                 onConfirm = {
                     viewModel.removeProduct(product.id)
                     productToDelete = null
+                }
+            )
+        }
+
+        // Вызов меню
+        if (showMenu) {
+            ProductsMenu(
+                sheetState = menuSheetState,
+                onDismissRequest = { showMenu = false },
+                currentSortType = currentSortType,
+                onSortTypeSelected = { selectedSort ->
+                    viewModel.setSortType(selectedSort)
+                },
+                onDeleteAllClick = {
+                    showMenu = false
+                    showDeleteAllDialog = true
+                },
+                onClearPurchasedClick = {
+                    showMenu = false
+                    viewModel.clearPurchasedProduct()
+                }
+            )
+        }
+
+        // Вызов диалога удаления всех товаров
+        if (showDeleteAllDialog) {
+            DeleteConfirmationDialog(
+                title = stringResource(R.string.products_delete_all_dialog),
+                onDismiss = {
+                    showDeleteAllDialog = false
+                },
+                onConfirm = {
+                    viewModel.deleteAllProducts()
+                    showDeleteAllDialog = false
                 }
             )
         }
@@ -236,20 +283,20 @@ fun ProductsContent(
 ) {
     LazyColumn {
         items(
-            count = products.size,
-            key = { index -> products[index].id }
-        ) { index ->
+            items = products,
+            key = { it.id }
+        ) { product ->
 
             SwipeableProductItem(
-                item = products[index],
+                item = product,
                 onCheckedChange = { isChecked ->
-                    onCheckedChange(products[index], isChecked)
+                    onCheckedChange(product, isChecked)
                 },
                 onProductChange = {
-                    onProductChange(products[index])
+                    onProductChange(product)
                 },
                 onProductDelete = {
-                    onProductDelete(products[index])
+                    onProductDelete(product)
                 }
             )
 

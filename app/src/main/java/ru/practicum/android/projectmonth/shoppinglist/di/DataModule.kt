@@ -54,9 +54,11 @@ val dataModule = module {
     single {
         AuthConverter()
     }
+
     single {
-        ShoppingListDbConverter(get())
+        ShoppingListDbConverter()
     }
+
     single {
         ProductDbConverter()
     }

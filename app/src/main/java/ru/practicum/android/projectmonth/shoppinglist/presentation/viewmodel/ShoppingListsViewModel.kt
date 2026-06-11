@@ -69,6 +69,7 @@ class ShoppingListsViewModel(
                     name = name,
                     iconRes = DEFAULT_SHOPPING_LIST_ICON,
                     products = emptyList(),
+                    sortType = 0,
                     login = authInteractor.currentUser()
                 )
             ).collect {

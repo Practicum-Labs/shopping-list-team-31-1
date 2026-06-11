@@ -1,6 +1,7 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -107,6 +108,13 @@ fun SwipeableProductItem(
                             }
                         }
                     )
+                }
+                .clickable {
+                    if (offsetX != 0f) {
+                        offsetX = 0f
+                    } else {
+                        onCheckedChange(!item.checked)
+                    }
                 }
                 .background(color = LightBackground)
         )
