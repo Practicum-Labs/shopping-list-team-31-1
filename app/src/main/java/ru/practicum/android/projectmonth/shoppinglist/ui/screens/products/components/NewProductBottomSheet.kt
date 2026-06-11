@@ -1,5 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,11 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +38,7 @@ import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
@@ -43,17 +48,40 @@ fun NewProductBottomSheet(
     onNameChange: (String) -> Unit,
     onNumberChange: (Float) -> Unit,
     onUnitChange: (String) -> Unit,
-    productToChange: Product? = null
+    productToChange: Product? = null,
+    suggestionsList: List<String> = emptyList()
 ) {
     val measureUnits = stringArrayResource(R.array.measure_units)
 
     var productName by remember { mutableStateOf("") }
     var number by remember { mutableStateOf("") }
     var selectedUnit by remember { mutableStateOf("") }
+
     var isDropdownExpanded by remember { mutableStateOf(false) }
+    var isSuggestionsDropdownExpanded by remember { mutableStateOf(false) }
+    var isTextFieldFocused by remember { mutableStateOf(false) }
 
     val currentNumber = number.toFloatOrNull() ?: 0f
     val minusButtonEnabled = currentNumber >= 1
+
+    // Фильтрация подсказок на основе ввода
+    val filteredSuggestions = remember(productName, suggestionsList) {
+        if (productName.isBlank()) {
+            emptyList()
+        } else {
+            suggestionsList
+                .filter { it.contains(productName, ignoreCase = true) }
+                .distinct()
+                .take(5)
+        }
+    }
+
+    // Управление видимостью выпадающего меню подсказок
+    LaunchedEffect(filteredSuggestions, isTextFieldFocused, productName) {
+        isSuggestionsDropdownExpanded = isTextFieldFocused &&
+                filteredSuggestions.isNotEmpty() &&
+                productName.isNotBlank()
+    }
 
     // Заполнение полей из изменяемого продукта
     LaunchedEffect(productToChange) {
@@ -77,7 +105,7 @@ fun NewProductBottomSheet(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Поле ввода названия товара
+            // Поле ввода названия товара с автодополнением
             CustomTextInput(
                 value = productName,
                 onValueChange = {
@@ -86,8 +114,41 @@ fun NewProductBottomSheet(
                 },
                 labelResId = R.string.products_new_textfield_label,
                 placeholderResId = R.string.products_new_textfield_placeholder,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusEvent { focusState ->
+                        isTextFieldFocused = focusState.isFocused
+                    }
             )
+
+            // Выпадающее меню с подсказками
+            DropdownMenu(
+                expanded = isSuggestionsDropdownExpanded,
+                onDismissRequest = { isSuggestionsDropdownExpanded = false },
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .background(color = DropdownColor)
+            ) {
+                filteredSuggestions.forEach { suggestion ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = suggestion,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = DarkText,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        onClick = {
+                            productName = suggestion
+                            onNameChange(suggestion)
+                            isSuggestionsDropdownExpanded = false
+                            isTextFieldFocused = false
+                        }
+                    )
+                }
+            }
 
             // Нижний ряд элементов
             Row(
@@ -105,8 +166,9 @@ fun NewProductBottomSheet(
                     },
                     labelResId = R.string.products_new_textfield_number,
                     placeholderResId = R.string.products_new_textfield_number,
-                    modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .weight(1f)
                 )
 
                 // Выпадающий список единиц измерения

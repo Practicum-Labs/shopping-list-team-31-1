@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.projectmonth.shoppinglist.data.converter.db.ProductDbConverter
 import ru.practicum.android.projectmonth.shoppinglist.data.db.AppDatabase
+import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductSuggestEntity
 import ru.practicum.android.projectmonth.shoppinglist.domain.ProductRepository
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 
@@ -55,5 +56,21 @@ class ProductRepositoryImpl(
         appDatabase
             .productDao()
             .deleteByShoppingListId(shoppingListId)
+    }
+
+    override fun getProductSuggests(user: String): Flow<List<String>> =
+        appDatabase
+            .productSuggestDao()
+            .getAll(user)
+
+    override suspend fun addProductSuggest(productName: String, user: String) {
+        appDatabase
+            .productSuggestDao()
+            .insert(
+                ProductSuggestEntity(
+                    productName = productName,
+                    user = user
+                )
+            )
     }
 }

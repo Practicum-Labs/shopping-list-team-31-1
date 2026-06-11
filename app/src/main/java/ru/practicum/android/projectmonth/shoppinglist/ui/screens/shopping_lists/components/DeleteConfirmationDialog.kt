@@ -20,6 +20,7 @@ import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownSurface
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.RegularBrown
 
 @Composable
@@ -32,6 +33,7 @@ fun DeleteConfirmationDialog(
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_attention),
+                tint = MediumDarkText,
                 contentDescription = stringResource(R.string.attention_icon)
             )
         },

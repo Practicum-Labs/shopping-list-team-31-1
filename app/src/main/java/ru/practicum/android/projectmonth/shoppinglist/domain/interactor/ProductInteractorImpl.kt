@@ -42,4 +42,10 @@ class ProductInteractorImpl(
     override suspend fun deleteShoppingListProducts(shoppingListId: Long) {
         repository.deleteShoppingListProducts(shoppingListId)
     }
+
+    override fun getProductSuggests(): Flow<List<String>> =
+        repository.getProductSuggests(authRepository.currentUser())
+
+    override suspend fun addProductSuggest(productName: String) =
+        repository.addProductSuggest(productName, authRepository.currentUser())
 }
