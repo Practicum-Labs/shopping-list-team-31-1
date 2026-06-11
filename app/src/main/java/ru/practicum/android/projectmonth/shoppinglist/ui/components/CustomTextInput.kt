@@ -49,6 +49,7 @@ fun CustomTextInput(
         placeholder = {
             Text(
                 text = stringResource(placeholderResId),
+                color = MediumDarkText
             )
         },
         singleLine = true,
