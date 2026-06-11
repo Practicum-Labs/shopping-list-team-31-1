@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
+import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ProductInteractor
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ProductsState
 
 class ProductsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val productInteractor: ProductInteractor
+    private val productInteractor: ProductInteractor,
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     val shoppingListId: Long = checkNotNull(savedStateHandle["shoppingListId"])
@@ -46,7 +48,8 @@ class ProductsViewModel(
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,
-                    shoppingListId = shoppingListId
+                    shoppingListId = shoppingListId,
+                    login = authInteractor.currentUser()
                 )
             ).collect {
                 getProducts()
@@ -75,7 +78,8 @@ class ProductsViewModel(
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,
-                    shoppingListId = shoppingListId
+                    shoppingListId = shoppingListId,
+                    login = authInteractor.currentUser()
                 )
             ).collect {
                 getProducts()
@@ -86,6 +90,7 @@ class ProductsViewModel(
     fun removeProduct(productId: Long) {
         viewModelScope.launch {
             productInteractor.removeProduct(productId)
+            getProducts()
         }
     }
 

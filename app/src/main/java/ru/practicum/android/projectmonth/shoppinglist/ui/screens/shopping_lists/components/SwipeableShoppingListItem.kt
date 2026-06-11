@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,9 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -37,8 +38,6 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElement
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.RegularBrown
 import kotlin.math.abs
-import android.widget.Toast
-import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun SwipeableShoppingListItem(
@@ -51,10 +50,10 @@ fun SwipeableShoppingListItem(
 ) {
     var offsetX by remember { mutableStateOf(0f) }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
-    // Ширина для 3 иконок в кружочках (каждая ~56dp с отступами)
     val iconsWidth = with(LocalDensity.current) { 200.dp.toPx() }
+    val fullSwipeWidth = with(LocalDensity.current) { 300.dp.toPx() }
+    val rightFullSwipeWidth = with(LocalDensity.current) { 300.dp.toPx() }
     val swipeThreshold = with(LocalDensity.current) { 50.dp.toPx() }
 
     Box(
@@ -62,7 +61,6 @@ fun SwipeableShoppingListItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
     ) {
-        // Фоновые действия (светлый фон, который появляется при свайпе)
         Row(
             modifier = Modifier
                 .matchParentSize()
@@ -70,7 +68,6 @@ fun SwipeableShoppingListItem(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Кнопка редактирования - белый кружок
             IconButton(
                 onClick = {
                     scope.launch {
@@ -84,7 +81,7 @@ fun SwipeableShoppingListItem(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_edit),
-                    contentDescription = "Редактировать",
+                    contentDescription = stringResource(R.string.edit_list),
                     tint = MediumDarkText,
                     modifier = Modifier.size(24.dp)
                 )
@@ -92,11 +89,10 @@ fun SwipeableShoppingListItem(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Кнопка копирования - белый кружок (заглушка)
             IconButton(
                 onClick = {
                     scope.launch {
-                        Toast.makeText(context, "Функция копирования временно недоступна", Toast.LENGTH_SHORT).show()
+                        onCopy(item)
                         offsetX = 0f
                     }
                 },
@@ -106,7 +102,7 @@ fun SwipeableShoppingListItem(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_copy),
-                    contentDescription = "Копировать",
+                    contentDescription = stringResource(R.string.copy_list),
                     tint = MediumDarkText,
                     modifier = Modifier.size(24.dp)
                 )
@@ -114,7 +110,6 @@ fun SwipeableShoppingListItem(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Кнопка удаления - белый кружок
             IconButton(
                 onClick = {
                     scope.launch {
@@ -128,7 +123,7 @@ fun SwipeableShoppingListItem(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = "Удалить",
+                    contentDescription = stringResource(R.string.delete_list),
                     tint = RegularBrown,
                     modifier = Modifier.size(24.dp)
                 )
@@ -137,7 +132,6 @@ fun SwipeableShoppingListItem(
             Spacer(modifier = Modifier.width(16.dp))
         }
 
-        // Основной контент (перемещаемый)
         ShoppingListsItem(
             item = item,
             onClick = onItemClick,
@@ -148,10 +142,33 @@ fun SwipeableShoppingListItem(
                     detectHorizontalDragGestures(
                         onDragEnd = {
                             scope.launch {
-                                if (abs(offsetX) > swipeThreshold) {
-                                    offsetX = -iconsWidth
-                                } else {
-                                    offsetX = 0f
+                                when {
+                                    // Полный свайп ВЛЕВО до края - удаляем
+                                    offsetX <= -fullSwipeWidth -> {
+                                        onDelete(item)
+                                        offsetX = 0f
+                                    }
+                                    // Полный свайп ВПРАВО до края - переименовываем
+                                    offsetX >= rightFullSwipeWidth -> {
+                                        onRename(item)
+                                        offsetX = 0f
+                                    }
+                                    // Свайп ВЛЕВО до иконок - фиксируем на иконках
+                                    offsetX <= -iconsWidth -> {
+                                        offsetX = -iconsWidth
+                                    }
+                                    // Слабый свайп ВЛЕВО - возвращаем
+                                    offsetX < 0 && abs(offsetX) > swipeThreshold -> {
+                                        offsetX = -iconsWidth
+                                    }
+                                    // Любой свайп ВПРАВО - сразу возвращаем (без фиксации)
+                                    offsetX > 0 -> {
+                                        offsetX = 0f
+                                    }
+                                    // Очень слабый - возврат
+                                    else -> {
+                                        offsetX = 0f
+                                    }
                                 }
                             }
                         },
@@ -164,8 +181,8 @@ fun SwipeableShoppingListItem(
                             change.consume()
                             val newOffset = offsetX + dragAmount
                             offsetX = when {
-                                newOffset > 0 -> 0f
-                                newOffset < -iconsWidth -> -iconsWidth
+                                newOffset > rightFullSwipeWidth -> rightFullSwipeWidth
+                                newOffset < -fullSwipeWidth -> -fullSwipeWidth
                                 else -> newOffset
                             }
                         }

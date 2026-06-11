@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import ru.practicum.android.projectmonth.shoppinglist.di.dataModule
 import ru.practicum.android.projectmonth.shoppinglist.di.interactorModule
@@ -20,9 +21,11 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.ShoppingListTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startKoin {
-            androidContext(this@MainActivity)
-            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        if (GlobalContext.getOrNull() == null) {
+            startKoin {
+                androidContext(this@MainActivity)
+                modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+            }
         }
         setContent {
             ShoppingListTheme {

@@ -32,7 +32,7 @@ fun DeleteConfirmationDialog(
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_attention),
-                contentDescription = null
+                contentDescription = stringResource(R.string.attention_icon)
             )
         },
         title = {
@@ -100,37 +100,10 @@ fun DeleteListDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    AlertDialog(
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_attention),
-                contentDescription = null
-            )
-        },
-        title = {
-            Text(
-                text = stringResource(R.string.delete_list_title, listName),
-                style = MaterialTheme.typography.headlineLarge
-            )
-        },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = stringResource(R.string.delete),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = stringResource(R.string.cancel),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-        },
-        containerColor = LightBrownSurface
+    DeleteConfirmationDialog(
+        title = stringResource(R.string.delete_list_title, listName),
+        onDismiss = onDismiss,
+        onConfirm = onConfirm
     )
 }
 
@@ -138,7 +111,7 @@ fun DeleteListDialog(
 @Composable
 fun DeleteConfirmationDialogPreview() {
     DeleteConfirmationDialog(
-        title = "Удалить все списки?",
+        title = stringResource(R.string.delete_all_lists_title),
         onDismiss = {},
         onConfirm = {}
     )
