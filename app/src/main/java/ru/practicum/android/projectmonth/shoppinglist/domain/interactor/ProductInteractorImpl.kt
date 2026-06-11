@@ -31,10 +31,9 @@ class ProductInteractorImpl(
     }
         .flowOn(Dispatchers.IO)
 
-    override fun getProductsByShoppingListId(id: Long): Flow<List<Product>> = flow {
-        emit(repository.getProductsByShoppingListId(id))
+    override suspend fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
+        return repository.getProductsByShoppingListId(id)
     }
-        .flowOn(Dispatchers.IO)
 
     override suspend fun removeProduct(productId: Long) {
         repository.deleteProduct(productId)

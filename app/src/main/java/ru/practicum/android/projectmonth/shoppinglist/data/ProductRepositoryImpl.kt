@@ -1,5 +1,7 @@
 package ru.practicum.android.projectmonth.shoppinglist.data
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import ru.practicum.android.projectmonth.shoppinglist.data.converter.db.ProductDbConverter
 import ru.practicum.android.projectmonth.shoppinglist.data.db.AppDatabase
 import ru.practicum.android.projectmonth.shoppinglist.domain.ProductRepository
@@ -32,11 +34,15 @@ class ProductRepositoryImpl(
         return productDbConverter.map(appDatabase.productDao().getById(id))
     }
 
-    override suspend fun getProductsByShoppingListId(id: Long): List<Product> {
+    override suspend fun getProductsByShoppingListId(id: Long): Flow<List<Product>> {
         return appDatabase
             .productDao()
             .getProductsByShoppingListId(id)
-            .map {productDbConverter.map(it)}
+            .map { entities ->
+                entities.map { productEntity ->
+                    productDbConverter.map(productEntity)
+                }
+            }
     }
 
     override suspend fun deleteProduct(productId: Long) {
