@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
 
+val defaultTextFieldHeight = 64.dp
+
 @Composable
 fun CustomTextInput(
     value: String,
@@ -51,7 +53,7 @@ fun CustomTextInput(
         },
         singleLine = true,
         keyboardOptions = keyboardOptions,
-        modifier = modifier.height(64.dp),
+        modifier = modifier.height(defaultTextFieldHeight),
         visualTransformation = visualTransformation,
         trailingIcon = {
             if (includeClearIcon) {

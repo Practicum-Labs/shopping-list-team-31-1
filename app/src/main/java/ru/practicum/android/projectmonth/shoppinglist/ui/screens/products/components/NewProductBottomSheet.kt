@@ -1,6 +1,5 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,13 +36,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
+import ru.practicum.android.projectmonth.shoppinglist.ui.components.defaultTextFieldHeight
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
+import kotlin.String
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,33 +127,19 @@ fun NewProductBottomSheet(
                     }
             )
 
-            // Выпадающее меню с подсказками
-            DropdownMenu(
-                expanded = isSuggestionsDropdownExpanded,
-                onDismissRequest = { isSuggestionsDropdownExpanded = false },
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .background(color = DropdownColor)
-            ) {
-                filteredSuggestions.forEach { suggestion ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = suggestion,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = DarkText,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        onClick = {
-                            productName = suggestion
-                            onNameChange(suggestion)
-                            isSuggestionsDropdownExpanded = false
-                            isTextFieldFocused = false
-                        }
-                    )
-                }
+            if (isSuggestionsDropdownExpanded) {
+                SuggestionPopup(
+                    suggestions = filteredSuggestions,
+                    onClick = { suggestion ->
+                        productName = suggestion
+                        onNameChange(suggestion)
+                        isSuggestionsDropdownExpanded = false
+                        isTextFieldFocused = false
+                    },
+                    onDismissRequest = {
+                        isSuggestionsDropdownExpanded = false
+                    }
+                )
             }
 
             // Нижний ряд элементов
@@ -241,6 +233,50 @@ fun NewProductBottomSheet(
                     iconResId = R.drawable.ic_add,
                     modifier = Modifier.offset(y = (-8).dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun SuggestionPopup(
+    suggestions: List<String>,
+    onClick: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    Popup(
+        alignment = Alignment.TopStart,
+        properties = PopupProperties(
+            focusable = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        ),
+        onDismissRequest = onDismissRequest
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .offset(y = defaultTextFieldHeight),
+            shape = RoundedCornerShape(4.dp),
+            shadowElevation = 4.dp,
+            color = DropdownColor
+        ) {
+            LazyColumn {
+                items(items = suggestions) { suggestion ->
+                    TextButton(
+                        onClick = {
+                            onClick(suggestion)
+                        }
+                    ) {
+                        Text(
+                            text = suggestion,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = DarkText,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         }
     }
