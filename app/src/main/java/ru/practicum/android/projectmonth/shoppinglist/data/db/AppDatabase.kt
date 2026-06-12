@@ -3,8 +3,10 @@ package ru.practicum.android.projectmonth.shoppinglist.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import ru.practicum.android.projectmonth.shoppinglist.data.db.dao.ProductDao
+import ru.practicum.android.projectmonth.shoppinglist.data.db.dao.ProductSuggestDao
 import ru.practicum.android.projectmonth.shoppinglist.data.db.dao.ShoppingListDao
 import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductEntity
+import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductSuggestEntity
 import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ShoppingListEntity
 
 
@@ -12,12 +14,13 @@ import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ShoppingLis
     entities = [
         ShoppingListEntity::class,
         ProductEntity::class,
+        ProductSuggestEntity::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun shoppingListDao(): ShoppingListDao
     abstract fun productDao(): ProductDao
-
+    abstract fun productSuggestDao(): ProductSuggestDao
 }

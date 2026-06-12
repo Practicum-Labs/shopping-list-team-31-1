@@ -30,6 +30,9 @@ class ProductsViewModel(
     var uiState by mutableStateOf<ProductsState>(ProductsState.Empty)
         private set
 
+    var productSuggestions by mutableStateOf<List<String>>(emptyList())
+        private set
+
     var currentSortType by mutableStateOf(SortType.NONE)
         private set
 
@@ -47,6 +50,15 @@ class ProductsViewModel(
         productsJob = viewModelScope.launch {
             val shoppingListFlow = shoppingListInteractor.getShoppingListById(shoppingListId)
             val productsFlow = productInteractor.getProductsByShoppingListId(shoppingListId)
+
+            // Получение подсказок в отдельной корутине
+            launch {
+                productInteractor
+                    .getProductSuggests()
+                    .collect { result ->
+                        productSuggestions = result
+                    }
+            }
 
             combine(shoppingListFlow, productsFlow) { list, products ->
                 shoppingList = list
@@ -68,7 +80,7 @@ class ProductsViewModel(
             productInteractor.saveNewProduct(
                 Product(
                     id = 0L,
-                    name = name,
+                    name = name.trim(),
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,
@@ -76,6 +88,8 @@ class ProductsViewModel(
                     login = authInteractor.currentUser()
                 )
             ).collect { }
+
+            productInteractor.addProductSuggest(name.trim())
         }
     }
 
@@ -94,7 +108,7 @@ class ProductsViewModel(
                 id = productId,
                 product = Product(
                     id = productId,
-                    name = name,
+                    name = name.trim(),
                     checked = false,
                     number = number,
                     measureUnit = measureUnit,

@@ -12,4 +12,7 @@ interface ProductInteractor {
     suspend fun getProductsByShoppingListId(id: Long): Flow<List<Product>>
     suspend fun removeProduct(productId: Long)
     suspend fun deleteShoppingListProducts(shoppingListId: Long)
+
+    fun getProductSuggests(): Flow<List<String>>
+    suspend fun addProductSuggest(productName: String)
 }

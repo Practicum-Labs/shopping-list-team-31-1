@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.projectmonth.shoppinglist.R
@@ -140,7 +141,13 @@ fun ProductItem(
         Column {
             Text(
                 text = item.name,
-                style = MaterialTheme.typography.labelLarge,
+                style = if (item.checked) {
+                    MaterialTheme.typography.labelLarge.copy(
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                } else {
+                    MaterialTheme.typography.labelLarge
+                },
                 color = DarkText
             )
             Text(

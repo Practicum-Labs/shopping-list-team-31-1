@@ -67,6 +67,7 @@ fun ProductsScreen(
 
     val uiState = viewModel.uiState
     val currentSortType = viewModel.currentSortType
+    val productsSuggestions = viewModel.productSuggestions
 
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
@@ -137,7 +138,8 @@ fun ProductsScreen(
                     onUnitChange = { unit ->
                         newProductUnit = unit
                     },
-                    productToChange = productToChange
+                    productToChange = productToChange,
+                    suggestionsList = productsSuggestions
                 )
             },
             scaffoldState = scaffoldState,
@@ -227,7 +229,7 @@ fun ProductsScreen(
         // Вызов диалога удаления товара
         productToDelete?.let { product ->
             DeleteConfirmationDialog(
-                title = stringResource(R.string.products_remove_dialog, product.name.trim()),
+                title = stringResource(R.string.products_remove_dialog, product.name),
                 onDismiss = {
                     productToDelete = null
                 },
