@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,13 +36,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomTextInput
-import ru.practicum.android.projectmonth.shoppinglist.ui.components.defaultTextFieldHeight
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DropdownColor
@@ -86,7 +91,9 @@ fun NewProductBottomSheet(
     LaunchedEffect(filteredSuggestions, isTextFieldFocused, productName) {
         isSuggestionsDropdownExpanded = isTextFieldFocused &&
                 filteredSuggestions.isNotEmpty() &&
-                productName.isNotBlank()
+                productName.isNotBlank() &&
+                // Для случаев, когда единственная подсказка идентична введенному названию
+                !(filteredSuggestions.size == 1 && filteredSuggestions.first() == productName)
     }
 
     // Заполнение полей из изменяемого продукта
@@ -111,7 +118,7 @@ fun NewProductBottomSheet(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Поле ввода названия товара с автодополнением
+            // Поле ввода названия товара
             CustomTextInput(
                 value = productName,
                 onValueChange = {
@@ -127,6 +134,7 @@ fun NewProductBottomSheet(
                     }
             )
 
+            // Всплывающая подсказка названия товара
             if (isSuggestionsDropdownExpanded) {
                 SuggestionPopup(
                     suggestions = filteredSuggestions,
@@ -245,23 +253,22 @@ fun SuggestionPopup(
     onDismissRequest: () -> Unit
 ) {
     Popup(
-        alignment = Alignment.TopStart,
         properties = PopupProperties(
             focusable = false,
             dismissOnBackPress = true,
             dismissOnClickOutside = true
         ),
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        popupPositionProvider = TopSuggestionPositionProvider()
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .offset(y = defaultTextFieldHeight),
+                .fillMaxWidth(0.5f),
             shape = RoundedCornerShape(4.dp),
             shadowElevation = 4.dp,
             color = DropdownColor
         ) {
-            LazyColumn {
+            LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
                 items(items = suggestions) { suggestion ->
                     TextButton(
                         onClick = {
@@ -296,4 +303,21 @@ fun NewProductBottomSheetPreview() {
 // Обрезать .0 для целого количества товаров
 fun trimInteger(digit: Float): String {
     return if (digit % 1.0 == 0.0) digit.toInt().toString() else digit.toString()
+}
+
+// Провайдер координат для размещения окна над текстовым полем
+class TopSuggestionPositionProvider : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        // x остается по левому краю текстового поля
+        // y поднимаем вверх на высоту самого popup (popupContentSize.height)
+        return IntOffset(
+            x = anchorBounds.left,
+            y = anchorBounds.top - popupContentSize.height
+        )
+    }
 }
