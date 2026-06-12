@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,7 +41,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedM
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.NewProductBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsMenu
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.ProductsTopBar
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.SwipeableProductItem
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.products.components.products_list.ProductsList
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteConfirmationDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
 
@@ -158,7 +155,7 @@ fun ProductsScreen(
                 }
 
                 is ProductsState.Content -> {
-                    ProductsContent(
+                    ProductsList(
                         products = uiState.data,
                         onCheckedChange = { product, isChecked ->
                             viewModel.checkProduct(product, isChecked)
@@ -275,42 +272,6 @@ fun ProductsScreen(
         }
     }
 }
-
-@Composable
-fun ProductsContent(
-    products: List<Product>,
-    onCheckedChange: (Product, Boolean) -> Unit,
-    onProductChange: (Product) -> Unit,
-    onProductDelete: (Product) -> Unit
-) {
-    LazyColumn {
-        items(
-            items = products,
-            key = { it.id }
-        ) { product ->
-
-            SwipeableProductItem(
-                item = product,
-                onCheckedChange = { isChecked ->
-                    onCheckedChange(product, isChecked)
-                },
-                onProductChange = {
-                    onProductChange(product)
-                },
-                onProductDelete = {
-                    onProductDelete(product)
-                }
-            )
-
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = productListDividerColor
-            )
-        }
-    }
-}
-
-
 
 @Composable
 fun DarkBackgroundBox(
