@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
@@ -72,7 +71,7 @@ class ShoppingListsViewModel(
                     sortType = 0,
                     login = authInteractor.currentUser()
                 )
-            ).collect {
+            ).collect { _ ->
                 getShoppingLists()
             }
         }
@@ -96,7 +95,17 @@ class ShoppingListsViewModel(
         if (newName.isBlank() || newName == shoppingList.name) return
         viewModelScope.launch {
             val updatedList = shoppingList.copy(name = newName)
-            shoppingListInteractor.updateShoppingList(updatedList.id, updatedList).collect {
+            shoppingListInteractor.updateShoppingList(updatedList.id, updatedList).collect { _ ->
+                getShoppingLists()
+            }
+        }
+    }
+
+    fun updateShoppingListIcon(shoppingList: ShoppingList, newIconKey: String) {
+        if (newIconKey == shoppingList.iconRes) return
+        viewModelScope.launch {
+            val updatedList = shoppingList.copy(iconRes = newIconKey)
+            shoppingListInteractor.updateShoppingList(updatedList.id, updatedList).collect { _ ->
                 getShoppingLists()
             }
         }
@@ -107,7 +116,6 @@ class ShoppingListsViewModel(
             val newName = "${shoppingList.name} (копия)"
             var newShoppingListId = 0L
 
-            // Сохраняем новый список
             shoppingListInteractor.saveNewShoppingList(
                 ShoppingList(
                     id = 0L,
@@ -120,10 +128,8 @@ class ShoppingListsViewModel(
                 newShoppingListId = newList.id
             }
 
-            // Получаем продукты из исходного списка
             val products = productInteractor.getProductsByShoppingListId(shoppingList.id).first()
 
-            // Копируем каждый продукт в новый список
             products.forEach { product ->
                 productInteractor.saveNewProduct(
                     Product(
@@ -135,7 +141,7 @@ class ShoppingListsViewModel(
                         shoppingListId = newShoppingListId,
                         login = authInteractor.currentUser()
                     )
-                ).collect()
+                ).collect { _ -> }
             }
 
             getShoppingLists()
