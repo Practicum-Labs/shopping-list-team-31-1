@@ -173,7 +173,7 @@ fun ProductsScreen(
                         },
                         isReorderable = currentSortType == SortType.CUSTOM,
                         onReorder = { from, to ->
-
+                            viewModel.swapProducts(from, to)
                         }
                     )
                 }

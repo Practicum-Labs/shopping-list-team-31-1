@@ -153,10 +153,39 @@ class ProductsViewModel(
         val currentState = uiState
 
         if (currentState is ProductsState.Content) {
-            uiState = currentState.copy(data = applySort(currentState.data))
+            val products = currentState.data
+
+            uiState = currentState.copy(data = applySort(products))
         }
 
         updateShoppingListSortType()
+    }
+
+    fun swapProducts(from: Int, to: Int) {
+        val currentState = uiState
+
+        if (currentState is ProductsState.Content) {
+            val products = currentState.data.toMutableList().apply {
+                add(to, removeAt(from))
+            }
+
+            updateProductsPositions(products)
+
+            uiState = currentState.copy(data = products)
+        }
+    }
+
+    private fun updateProductsPositions(products: List<Product>) {
+        viewModelScope.launch {
+            products.forEachIndexed { index, product ->
+                productInteractor.updateProduct(
+                    id = product.id,
+                    product = product.copy(
+                        sortPosition = index
+                    )
+                ).collect {  }
+            }
+        }
     }
 
     private fun updateShoppingListSortType() {
@@ -173,7 +202,8 @@ class ProductsViewModel(
     private fun applySort(products: List<Product>): List<Product> {
         return when (currentSortType) {
             SortType.ALPHABETICAL -> products.sortedBy { it.name.lowercase() }
-            else -> products
+            SortType.CUSTOM -> products.sortedBy { it.sortPosition }
+            SortType.NONE -> products
         }
     }
 }

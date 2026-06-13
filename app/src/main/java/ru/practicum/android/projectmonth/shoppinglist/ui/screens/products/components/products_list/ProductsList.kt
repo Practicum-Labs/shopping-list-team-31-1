@@ -33,8 +33,9 @@ fun ProductsList(
         onReorder(from.index, to.index)
     }
 
-
-    LazyColumn {
+    LazyColumn(
+        state = lazyListState
+    ) {
         items(
             items = products,
             key = { it.id }
@@ -70,7 +71,6 @@ fun ProductsList(
                         )
 
                     }
-
                 }
             } else {
                 SwipeableProductItem(
