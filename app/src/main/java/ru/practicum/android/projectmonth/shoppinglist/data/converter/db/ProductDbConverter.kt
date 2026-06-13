@@ -12,7 +12,8 @@ class ProductDbConverter {
             number = productEntity.number,
             measureUnit = productEntity.measureUnit,
             shoppingListId = productEntity.shoppingListId,
-            login = productEntity.login
+            login = productEntity.login,
+            sortPosition = productEntity.sortPosition
         )
     }
 
@@ -24,7 +25,8 @@ class ProductDbConverter {
             number = product.number,
             measureUnit = product.measureUnit,
             shoppingListId = product.shoppingListId,
-            login = product.login
+            login = product.login,
+            sortPosition = product.sortPosition
         )
     }
 

@@ -16,7 +16,7 @@ import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ShoppingLis
         ProductEntity::class,
         ProductSuggestEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

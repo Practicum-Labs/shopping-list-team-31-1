@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.AuthInteractor
 import ru.practicum.android.projectmonth.shoppinglist.domain.usecaces.ProductInteractor
@@ -126,14 +125,12 @@ class ShoppingListsViewModel(
             // Копируем каждый продукт в новый список
             products.forEach { product ->
                 productInteractor.saveNewProduct(
-                    Product(
+                    product.copy(
                         id = 0L,
                         name = product.name,
                         checked = false,
-                        number = product.number,
                         measureUnit = product.measureUnit,
-                        shoppingListId = newShoppingListId,
-                        login = authInteractor.currentUser()
+                        shoppingListId = newShoppingListId
                     )
                 ).collect()
             }

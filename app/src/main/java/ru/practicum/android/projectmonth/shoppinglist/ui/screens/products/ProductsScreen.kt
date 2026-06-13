@@ -203,7 +203,7 @@ fun ProductsScreen(
                             )
                         } else {
                             viewModel.updateProduct(
-                                productId = productToChange!!.id,
+                                product = productToChange!!,
                                 name = newProductName,
                                 number = newProductNumber,
                                 measureUnit = newProductUnit

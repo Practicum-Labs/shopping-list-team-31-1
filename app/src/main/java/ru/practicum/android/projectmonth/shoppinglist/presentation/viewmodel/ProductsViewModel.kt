@@ -85,7 +85,11 @@ class ProductsViewModel(
                     number = number,
                     measureUnit = measureUnit,
                     shoppingListId = shoppingListId,
-                    login = authInteractor.currentUser()
+                    login = authInteractor.currentUser(),
+                    sortPosition = when (val currentState = uiState) {
+                        is ProductsState.Empty -> 0
+                        is ProductsState.Content -> currentState.data.size
+                    }
                 )
             ).collect { }
 
@@ -102,18 +106,14 @@ class ProductsViewModel(
         }
     }
 
-    fun updateProduct(productId: Long, name: String, number: Float, measureUnit: String) {
+    fun updateProduct(product: Product, name: String, number: Float, measureUnit: String) {
         viewModelScope.launch {
             productInteractor.updateProduct(
-                id = productId,
-                product = Product(
-                    id = productId,
-                    name = name.trim(),
-                    checked = false,
+                id = product.id,
+                product = product.copy(
+                    name = name,
                     number = number,
-                    measureUnit = measureUnit,
-                    shoppingListId = shoppingListId,
-                    login = authInteractor.currentUser()
+                    measureUnit = measureUnit
                 )
             ).collect { }
         }

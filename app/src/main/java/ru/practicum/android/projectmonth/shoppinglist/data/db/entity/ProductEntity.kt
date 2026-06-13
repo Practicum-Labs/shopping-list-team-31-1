@@ -24,6 +24,7 @@ data class ProductEntity (
     val number: Float,
     @ColumnInfo("measure_unit")
     val measureUnit: String,
-    val login: String
-
+    val login: String,
+    @ColumnInfo("sort_position")
+    val sortPosition: Int
 )
