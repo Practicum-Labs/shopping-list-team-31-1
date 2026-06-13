@@ -34,6 +34,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.Product
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.SortType
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ProductsState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ProductsViewModel
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
@@ -169,6 +170,10 @@ fun ProductsScreen(
                         },
                         onProductDelete = { product ->
                             productToDelete = product
+                        },
+                        isReorderable = currentSortType == SortType.CUSTOM,
+                        onReorder = { from, to ->
+
                         }
                     )
                 }
