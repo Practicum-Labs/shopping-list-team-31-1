@@ -46,6 +46,7 @@ fun SwipeableShoppingListItem(
     onDelete: (ShoppingList) -> Unit,
     onRename: (ShoppingList) -> Unit,
     onCopy: (ShoppingList) -> Unit,
+    onIconLongClick: (ShoppingList) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var offsetX by remember { mutableStateOf(0f) }
@@ -135,6 +136,7 @@ fun SwipeableShoppingListItem(
         ShoppingListsItem(
             item = item,
             onClick = onItemClick,
+            onIconLongClick = onIconLongClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .offset { IntOffset(offsetX.toInt(), 0) }
@@ -143,29 +145,23 @@ fun SwipeableShoppingListItem(
                         onDragEnd = {
                             scope.launch {
                                 when {
-                                    // Полный свайп ВЛЕВО до края - удаляем
                                     offsetX <= -fullSwipeWidth -> {
                                         onDelete(item)
                                         offsetX = 0f
                                     }
-                                    // Полный свайп ВПРАВО до края - переименовываем
                                     offsetX >= rightFullSwipeWidth -> {
                                         onRename(item)
                                         offsetX = 0f
                                     }
-                                    // Свайп ВЛЕВО до иконок - фиксируем на иконках
                                     offsetX <= -iconsWidth -> {
                                         offsetX = -iconsWidth
                                     }
-                                    // Слабый свайп ВЛЕВО - возвращаем
                                     offsetX < 0 && abs(offsetX) > swipeThreshold -> {
                                         offsetX = -iconsWidth
                                     }
-                                    // Любой свайп ВПРАВО - сразу возвращаем (без фиксации)
                                     offsetX > 0 -> {
                                         offsetX = 0f
                                     }
-                                    // Очень слабый - возврат
                                     else -> {
                                         offsetX = 0f
                                     }

@@ -2,7 +2,9 @@ package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -37,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
+import ru.practicum.android.projectmonth.shoppinglist.domain.models.AppIcon
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ShoppingListsState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ShoppingListsViewModel
@@ -44,6 +47,7 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.components.CustomFab
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.IllustratedMessage
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteAllListsDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.DeleteListDialog
+import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.IconSelectionBottomSheet
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.NewShoppingListDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.RenameShoppingListDialog
 import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components.ShoppingListsTopBar
@@ -65,9 +69,10 @@ fun ShoppingListsScreen(
     var showDeleteAllDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf<ShoppingList?>(null) }
     var showRenameDialog by remember { mutableStateOf<ShoppingList?>(null) }
+    var showIconSelector by remember { mutableStateOf(false) }
+    var selectedListForIcon by remember { mutableStateOf<ShoppingList?>(null) }
 
     val allLists = (uiState as? ShoppingListsState.Content)?.data ?: emptyList()
-    // ✅ ИСПРАВЛЕНО: теперь ищет только с начала слова (startsWith)
     val filteredLists = if (isSearchActive && searchQuery.isNotEmpty()) {
         allLists.filter { it.name.startsWith(searchQuery, ignoreCase = true) }
     } else {
@@ -130,28 +135,51 @@ fun ShoppingListsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = innerPadding
                     ) {
                         items(
                             count = filteredLists.size,
                             key = { index -> filteredLists[index].id }
                         ) { index ->
-                            SwipeableShoppingListItem(
-                                item = filteredLists[index],
-                                onItemClick = { shoppingList ->
-                                    navController.navigate(Destination.Products.createRoute(shoppingList.id))
-                                },
-                                onDelete = { shoppingList ->
-                                    showDeleteListDialog = shoppingList
-                                },
-                                onRename = { shoppingList ->
-                                    showRenameDialog = shoppingList
-                                },
-                                onCopy = { shoppingList ->
-                                    viewModel.copyShoppingList(shoppingList)
-                                }
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(16.dp),
+                                        clip = false
+                                    )
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color(0xFFD0D0D0),
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                    .background(
+                                        color = LightBackground,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                SwipeableShoppingListItem(
+                                    item = filteredLists[index],
+                                    onItemClick = { shoppingList ->
+                                        navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                                    },
+                                    onDelete = { shoppingList ->
+                                        showDeleteListDialog = shoppingList
+                                    },
+                                    onRename = { shoppingList ->
+                                        showRenameDialog = shoppingList
+                                    },
+                                    onCopy = { shoppingList ->
+                                        viewModel.copyShoppingList(shoppingList)
+                                    },
+                                    onIconLongClick = { shoppingList ->
+                                        selectedListForIcon = shoppingList
+                                        showIconSelector = true
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -160,7 +188,6 @@ fun ShoppingListsScreen(
                 }
             }
 
-            // Затемнение только когда поиск активен и поле пустое
             if (isSearchActive && searchQuery.isEmpty()) {
                 Box(
                     modifier = Modifier
@@ -218,6 +245,23 @@ fun ShoppingListsScreen(
                 }
             )
         }
+
+        if (showIconSelector && selectedListForIcon != null) {
+            IconSelectionBottomSheet(
+                currentIconDbKey = selectedListForIcon!!.iconRes,
+                onIconSelected = { appIcon ->
+                    selectedListForIcon?.let { list ->
+                        viewModel.updateShoppingListIcon(list, appIcon.dbKey)
+                    }
+                    showIconSelector = false
+                    selectedListForIcon = null
+                },
+                onDismiss = {
+                    showIconSelector = false
+                    selectedListForIcon = null
+                }
+            )
+        }
     }
 }
 
@@ -225,6 +269,7 @@ fun ShoppingListsScreen(
 fun ShoppingListsItem(
     item: ShoppingList,
     onClick: (ShoppingList) -> Unit,
+    onIconLongClick: (ShoppingList) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -242,15 +287,20 @@ fun ShoppingListsItem(
         modifier = modifier
             .fillMaxWidth()
             .shadow(
-                elevation = 2.dp,
+                elevation = 8.dp,
                 shape = RoundedCornerShape(16.dp),
                 clip = false
+            )
+            .border(
+                width = 1.dp,
+                color = Color(0xFFD0D0D0),
+                shape = RoundedCornerShape(16.dp)
             )
             .background(
                 color = LightBackground,
                 shape = RoundedCornerShape(16.dp)
             )
-            .padding(8.dp)
+            .padding(12.dp)
             .clickable {
                 onClick(item)
             },
@@ -262,6 +312,10 @@ fun ShoppingListsItem(
                 .background(
                     color = LightBrownElements,
                     shape = CircleShape
+                )
+                .combinedClickable(
+                    onClick = { },
+                    onLongClick = { onIconLongClick(item) }
                 ),
             contentAlignment = Alignment.Center
         ) {
