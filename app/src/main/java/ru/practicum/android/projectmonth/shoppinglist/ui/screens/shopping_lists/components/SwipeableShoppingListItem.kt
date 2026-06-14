@@ -1,6 +1,9 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +11,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,9 +28,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -32,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
-import ru.practicum.android.projectmonth.shoppinglist.ui.screens.shopping_lists.ShoppingListsItem
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.IconCircleBg
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.MediumDarkText
@@ -51,95 +60,123 @@ fun SwipeableShoppingListItem(
 ) {
     var offsetX by remember { mutableStateOf(0f) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val resources = LocalResources.current
 
     val iconsWidth = with(LocalDensity.current) { 200.dp.toPx() }
     val fullSwipeWidth = with(LocalDensity.current) { 300.dp.toPx() }
     val rightFullSwipeWidth = with(LocalDensity.current) { 300.dp.toPx() }
     val swipeThreshold = with(LocalDensity.current) { 50.dp.toPx() }
 
+    val iconResId = remember(resources, item.iconRes) {
+        resources.getIdentifier(
+            item.iconRes,
+            "drawable",
+            context.packageName
+        ).takeIf { it != 0 } ?: R.drawable.ic_shopping_list_default
+    }
+
+    val showSwipeIcons = offsetX < 0
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
     ) {
-        Row(
-            modifier = Modifier
-                .matchParentSize()
-                .background(LightBrownElements),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        onRename(item)
-                        offsetX = 0f
-                    }
-                },
+        if (showSwipeIcons) {
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .background(LightBackground, CircleShape)
+                    .matchParentSize()
+                    .background(Color.Transparent),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_edit),
-                    contentDescription = stringResource(R.string.edit_list),
-                    tint = MediumDarkText,
-                    modifier = Modifier.size(24.dp)
-                )
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            onRename(item)
+                            offsetX = 0f
+                        }
+                    },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(IconCircleBg, CircleShape)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_edit),
+                        contentDescription = stringResource(R.string.edit_list),
+                        tint = RegularBrown,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            onCopy(item)
+                            offsetX = 0f
+                        }
+                    },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(IconCircleBg, CircleShape)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_copy),
+                        contentDescription = stringResource(R.string.copy_list),
+                        tint = RegularBrown,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            onDelete(item)
+                            offsetX = 0f
+                        }
+                    },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(IconCircleBg, CircleShape)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = stringResource(R.string.delete_list),
+                        tint = RegularBrown,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        onCopy(item)
-                        offsetX = 0f
-                    }
-                },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(LightBackground, CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_copy),
-                    contentDescription = stringResource(R.string.copy_list),
-                    tint = MediumDarkText,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        onDelete(item)
-                        offsetX = 0f
-                    }
-                },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(LightBackground, CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = stringResource(R.string.delete_list),
-                    tint = RegularBrown,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
         }
 
-        ShoppingListsItem(
-            item = item,
-            onClick = onItemClick,
-            onIconLongClick = onIconLongClick,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .offset { IntOffset(offsetX.toInt(), 0) }
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    clip = false
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFFD0D0D0),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .background(
+                    color = LightBackground,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(12.dp)
+                .clickable {
+                    onItemClick(item)
+                }
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragEnd = {
@@ -183,7 +220,37 @@ fun SwipeableShoppingListItem(
                             }
                         }
                     )
-                }
-        )
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        color = LightBrownElements,
+                        shape = CircleShape
+                    )
+                    .combinedClickable(
+                        onClick = { },
+                        onLongClick = { onIconLongClick(item) }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(iconResId),
+                    contentDescription = null,
+                    tint = MediumDarkText,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.labelLarge,
+                color = MediumDarkText
+            )
+        }
     }
 }

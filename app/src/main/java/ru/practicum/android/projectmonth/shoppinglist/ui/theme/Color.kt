@@ -10,6 +10,7 @@ val LightBrownElements = Color(0xFFFFDCBB)
 val BottomSheetPeach = Color(0xFFFFF1E7)
 val RegularBrown = Color(0xFF845416)
 
+val IconCircleBg = Color(0xFFEEE0D5)
 val DropdownColor = Color(0xFFFAEBE0)
 
 
