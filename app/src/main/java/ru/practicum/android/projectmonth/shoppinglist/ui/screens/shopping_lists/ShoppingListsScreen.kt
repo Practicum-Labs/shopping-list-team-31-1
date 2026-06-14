@@ -142,44 +142,25 @@ fun ShoppingListsScreen(
                             count = filteredLists.size,
                             key = { index -> filteredLists[index].id }
                         ) { index ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .shadow(
-                                        elevation = 8.dp,
-                                        shape = RoundedCornerShape(16.dp),
-                                        clip = false
-                                    )
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color(0xFFD0D0D0),
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                                    .background(
-                                        color = LightBackground,
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                            ) {
-                                SwipeableShoppingListItem(
-                                    item = filteredLists[index],
-                                    onItemClick = { shoppingList ->
-                                        navController.navigate(Destination.Products.createRoute(shoppingList.id))
-                                    },
-                                    onDelete = { shoppingList ->
-                                        showDeleteListDialog = shoppingList
-                                    },
-                                    onRename = { shoppingList ->
-                                        showRenameDialog = shoppingList
-                                    },
-                                    onCopy = { shoppingList ->
-                                        viewModel.copyShoppingList(shoppingList)
-                                    },
-                                    onIconLongClick = { shoppingList ->
-                                        selectedListForIcon = shoppingList
-                                        showIconSelector = true
-                                    }
-                                )
-                            }
+                            SwipeableShoppingListItem(
+                                item = filteredLists[index],
+                                onItemClick = { shoppingList ->
+                                    navController.navigate(Destination.Products.createRoute(shoppingList.id))
+                                },
+                                onDelete = { shoppingList ->
+                                    showDeleteListDialog = shoppingList
+                                },
+                                onRename = { shoppingList ->
+                                    showRenameDialog = shoppingList
+                                },
+                                onCopy = { shoppingList ->
+                                    viewModel.copyShoppingList(shoppingList)
+                                },
+                                onIconLongClick = { shoppingList ->
+                                    selectedListForIcon = shoppingList
+                                    showIconSelector = true
+                                }
+                            )
                         }
                     }
                 }
