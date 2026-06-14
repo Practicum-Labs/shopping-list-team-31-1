@@ -25,7 +25,7 @@ fun ProductsList(
     onCheckedChange: (Product, Boolean) -> Unit,
     onProductChange: (Product) -> Unit,
     onProductDelete: (Product) -> Unit,
-    isReorderable: Boolean = false,
+    isReorderable: Boolean,
     onReorder: (Int, Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState()

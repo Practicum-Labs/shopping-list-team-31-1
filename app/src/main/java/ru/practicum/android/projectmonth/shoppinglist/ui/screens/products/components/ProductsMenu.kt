@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,7 +41,6 @@ import ru.practicum.android.projectmonth.shoppinglist.ui.theme.RegularBrown
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsMenu(
-    sheetState: SheetState,
     onDismissRequest: () -> Unit,
     currentSortType: SortType,
     onSortTypeSelected: (SortType) -> Unit,
@@ -54,7 +52,6 @@ fun ProductsMenu(
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = BottomSheetPeach
     ) {
