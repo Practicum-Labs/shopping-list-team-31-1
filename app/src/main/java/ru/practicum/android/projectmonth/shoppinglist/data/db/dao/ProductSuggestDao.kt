@@ -9,7 +9,7 @@ import ru.practicum.android.projectmonth.shoppinglist.data.db.entity.ProductSugg
 
 @Dao
 interface ProductSuggestDao {
-    @Query("SELECT product_name FROM product_suggest where user = :user")
+    @Query("SELECT product_name FROM product_suggest WHERE user = :user ORDER BY product_name")
     fun getAll(user: String): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

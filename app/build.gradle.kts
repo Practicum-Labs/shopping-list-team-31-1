@@ -93,8 +93,9 @@ dependencies {
     implementation(libs.androidsvg.aar)
     implementation(libs.glide.compose)
     implementation(libs.glide)
+    implementation(libs.reorderable)
     annotationProcessor(libs.glide.compiler)
-    testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockwebserver)
 }

@@ -7,6 +7,6 @@ data class Product(
     val number: Float,
     val measureUnit: String,
     val shoppingListId: Long,
-    val login: String
-
+    val login: String,
+    val sortPosition: Int
 )

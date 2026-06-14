@@ -1,24 +1,19 @@
 [versions]
-kotlin = "2.0.0"
 androidsvgAar = "1.4"
 converterGson = "3.0.0"
-java = "VERSION_17"
-javanumber = "17"
 koin = "3.5.6"
 
 # Build constants
 kotlinxCoroutinesAndroid = "1.10.2"
+kotlinxCoroutinesTest = "1.7.3"
 loggingInterceptor = "5.3.2"
-minSdk = "26"
-compileSdk = "36"
-targetSdk = "36"
+mockk = "1.13.8"
+mockwebserver = "4.12.0"
+reorderable = "3.1.0"
 
 composeBom = "2026.03.01"
 activityCompose = "1.13.0"
 
-# Detekt
-detekt = "1.23.8"
-detektTwitterComposeRules = "0.0.26"
 material3AdaptiveNavigationSuite = "1.4.0"
 navigationCompose = "2.9.7"
 material3 = "1.4.0"
@@ -32,25 +27,19 @@ datastorePreferences = "1.2.1"
 glideCompose = "1.0.0-beta09"
 glideVersion = '5.0.7'
 runtimeLivedata = "1.11.0"
-androidsvg = "1.4"
-
 
 [libraries]
 
-# Detekt
 androidsvg-aar = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvgAar" }
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
-staticAnalysis-detektPlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
-#staticAnalysis-detektCli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
-staticAnalysis-detektApi = { module = "io.gitlab.arturbosch.detekt:detekt-api", version.ref = "detekt" }
-staticAnalysis-detektTest = { module = "io.gitlab.arturbosch.detekt:detekt-test", version.ref = "detekt" }
-staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
-staticAnalysis-detektTwitterComposeRules = { module = "com.twitter.compose.rules:detekt", version.ref = "detektTwitterComposeRules" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 glide-compose = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideCompose" }
@@ -58,8 +47,6 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glideVersion" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-
-
 
 # AndroidX
 androidX-core = "androidx.core:core-ktx:1.18.0"

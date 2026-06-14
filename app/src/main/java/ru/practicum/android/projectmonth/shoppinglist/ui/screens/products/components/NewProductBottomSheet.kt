@@ -82,7 +82,6 @@ fun NewProductBottomSheet(
         } else {
             suggestionsList
                 .filter { it.contains(productName, ignoreCase = true) }
-                .distinct()
                 .take(5)
         }
     }
