@@ -12,7 +12,6 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -67,18 +66,21 @@ fun ProductsScreen(
     val currentSortType = viewModel.currentSortType
     val productsSuggestions = viewModel.productSuggestions
 
+    // Переменные для получения значений из диалога добавления/редактирования товара
     var newProductName by remember { mutableStateOf("") }
     var newProductNumber by remember { mutableFloatStateOf(0f) }
     var newProductUnit by remember { mutableStateOf("") }
 
+    // Флаги отображения меню и диалогов
     var showMenu by remember { mutableStateOf(false) }
     var showDeleteAllDialog by remember { mutableStateOf(false) }
+    var showDeletePurchasedDialog by remember { mutableStateOf(false) }
 
-    val menuSheetState = rememberModalBottomSheetState()
-
+    // Товары для удаления/редактирования
     var productToChange by remember { mutableStateOf<Product?>(null) }
     var productToDelete by remember { mutableStateOf<Product?>(null) }
 
+    // Флаг видимости диалога добавления/редактирования
     val isBottomSheetVisible = scaffoldState.bottomSheetState.targetValue == SheetValue.Expanded
 
     // Затемнение фона при открытии диалога
@@ -107,6 +109,7 @@ fun ProductsScreen(
     Box(Modifier.fillMaxSize()) {
         BottomSheetScaffold(
             topBar = {
+                // Верхняя панель
                 ProductsTopBar(
                     navController = navController,
                     onMenuClick = {
@@ -126,6 +129,7 @@ fun ProductsScreen(
                 }
             },
             sheetContent = {
+                // Диалог добавления/редактирования
                 NewProductBottomSheet(
                     onNameChange = { name ->
                         newProductName = name
@@ -145,6 +149,7 @@ fun ProductsScreen(
             sheetPeekHeight = 0.dp
         ) { innerPadding ->
 
+            // Основной контент
             when (uiState) {
                 is ProductsState.Empty -> {
                     IllustratedMessage(
@@ -154,7 +159,6 @@ fun ProductsScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
-
                 is ProductsState.Content -> {
                     ProductsList(
                         products = uiState.data,
@@ -171,9 +175,9 @@ fun ProductsScreen(
                         onProductDelete = { product ->
                             productToDelete = product
                         },
-                        isReorderable = currentSortType == SortType.CUSTOM,
+                        isReorderable = (currentSortType == SortType.CUSTOM),
                         onReorder = { from, to ->
-                            viewModel.swapProducts(from, to)
+                            viewModel.moveProduct(from, to)
                         }
                     )
                 }
@@ -189,13 +193,16 @@ fun ProductsScreen(
             }
         }
 
+        // Кнопка вызова диалога добавления товара + подтверждение добавления/изменения
         CustomFab(
             onClick = {
                 scope.launch {
                     if (isBottomSheetVisible) {
                         scaffoldState.bottomSheetState.hide()
 
-                        if (productToChange == null) {
+                        val currentProduct = productToChange
+
+                        if (currentProduct == null) {
                             viewModel.addProduct(
                                 name = newProductName,
                                 number = newProductNumber,
@@ -203,7 +210,7 @@ fun ProductsScreen(
                             )
                         } else {
                             viewModel.updateProduct(
-                                product = productToChange!!,
+                                product = currentProduct,
                                 name = newProductName,
                                 number = newProductNumber,
                                 measureUnit = newProductUnit
@@ -245,7 +252,6 @@ fun ProductsScreen(
         // Вызов меню
         if (showMenu) {
             ProductsMenu(
-                sheetState = menuSheetState,
                 onDismissRequest = { showMenu = false },
                 currentSortType = currentSortType,
                 onSortTypeSelected = { selectedSort ->
@@ -257,7 +263,7 @@ fun ProductsScreen(
                 },
                 onClearPurchasedClick = {
                     showMenu = false
-                    viewModel.clearPurchasedProduct()
+                    showDeletePurchasedDialog = true
                 }
             )
         }
@@ -272,6 +278,20 @@ fun ProductsScreen(
                 onConfirm = {
                     viewModel.deleteAllProducts()
                     showDeleteAllDialog = false
+                }
+            )
+        }
+
+        // Вызов диалога удаления купленных товаров
+        if (showDeletePurchasedDialog) {
+            DeleteConfirmationDialog(
+                title = stringResource(R.string.products_delete_purchased_dialog),
+                onDismiss = {
+                    showDeletePurchasedDialog = false
+                },
+                onConfirm = {
+                    viewModel.clearPurchasedProducts()
+                    showDeletePurchasedDialog = false
                 }
             )
         }

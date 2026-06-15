@@ -125,7 +125,7 @@ class ProductsViewModel(
         }
     }
 
-    fun clearPurchasedProduct() {
+    fun clearPurchasedProducts() {
         val currentState = uiState
 
         if (currentState is ProductsState.Content) {
@@ -161,7 +161,7 @@ class ProductsViewModel(
         updateShoppingListSortType()
     }
 
-    fun swapProducts(from: Int, to: Int) {
+    fun moveProduct(from: Int, to: Int) {
         val currentState = uiState
 
         if (currentState is ProductsState.Content) {
