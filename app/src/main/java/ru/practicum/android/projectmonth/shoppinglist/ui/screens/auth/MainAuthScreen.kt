@@ -1,7 +1,6 @@
 package ru.practicum.android.projectmonth.shoppinglist.ui.screens.auth
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -32,7 +32,6 @@ import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.ui.components.MainScreenTitle
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBackground
 
 
 val YsDisplayRegular = FontFamily(
@@ -99,7 +98,7 @@ fun AuthViewPager(navController: NavController) {
                 stringResource(R.string.register)
             ).forEachIndexed { index, title ->
                 Tab(
-                    modifier = Modifier.background(LightBackground),
+//                    modifier = Modifier.background(LightBackground),
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
@@ -110,9 +109,9 @@ fun AuthViewPager(navController: NavController) {
                         Text(
                             text = title,
                             color = if (pagerState.currentPage == index)
-                                DarkText
+                                MaterialTheme.colorScheme.primary      // Активный цвет
                             else
-                                DarkText.copy(alpha = 0.7f),
+                                MaterialTheme.colorScheme.onSurfaceVariant, // Неактивный цвет
                             fontFamily = YsDisplayRegular,
                             fontSize = 14.sp
                         )
