@@ -94,7 +94,7 @@ fun RegisterScreen(
             includeClearIcon = true
         )
         if (password.trim().isEmpty()) return
-        if (password.trim().length < 6) {
+        if (password.trim().length < 7) {
             WarnTextField(stringResource(R.string.register_password_warning))
             return
         }
