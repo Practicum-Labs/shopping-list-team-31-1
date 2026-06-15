@@ -37,6 +37,7 @@
     <string name="register">Регистрация</string>
 
     <string name="email">email</string>
+    <string name="email_4_recovery">Ваш email пользователя</string>
     <string name="password">пароль</string>
     <string name="enter_email">Введите email</string>
     <string name="enter_password">Введите пароль</string>

@@ -5,6 +5,8 @@ import androidx.compose.ui.graphics.Color
 val DarkText = Color(0xFF211A14)
 val LightText = Color(0xFFFFFAF8)
 val MediumDarkText = Color(0xFF50453A)
+val LightOnBackGround = Color(0xFF211A14)
+val DarkOnBackGround = Color(0xFFEEE0D5)
 val LightBackground = Color(0xFFFFF8F4)
 val DarkBackground = Color(0xFF000000)
 val LightBrownSurface = Color(0xFFF4E6DA)

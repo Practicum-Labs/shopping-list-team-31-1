@@ -89,7 +89,7 @@ fun AuthViewPager(navController: NavController) {
                 TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                     height = 2.dp,
-                    color = DarkText
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         ) {
