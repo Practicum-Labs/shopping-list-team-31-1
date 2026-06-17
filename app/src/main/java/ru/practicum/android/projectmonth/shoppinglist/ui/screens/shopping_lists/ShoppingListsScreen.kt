@@ -39,7 +39,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.core.navigation.Destination
-import ru.practicum.android.projectmonth.shoppinglist.domain.models.AppIcon
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.ShoppingList
 import ru.practicum.android.projectmonth.shoppinglist.presentation.state.ShoppingListsState
 import ru.practicum.android.projectmonth.shoppinglist.presentation.viewmodel.ShoppingListsViewModel
