@@ -24,7 +24,7 @@
 - Меньше 4 (+3 балла)
 - Меньше 6( +1 балл)
 
-10. Настроить рилизную сборку (proguard + minifyEnable) и подписать приложение (__<https://developer.android.com/studio/publish/app-signing>__) - _**не выполнено**_
+10. Настроить рилизную сборку (proguard + minifyEnable) и подписать приложение (__<https://developer.android.com/studio/publish/app-signing>__) - _**выполнено**_
 
 ## Главный экран
 
