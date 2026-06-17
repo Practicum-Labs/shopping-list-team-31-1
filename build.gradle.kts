@@ -27,6 +27,18 @@ subprojects {
             txt.required.set(false)
         }
     }
+
+    afterEvaluate {
+        if (project.hasProperty("android")) {
+            project.extensions.findByName("android")?.let { androidExt ->
+                if (androidExt is com.android.build.gradle.LibraryExtension) {
+                    androidExt.defaultConfig {
+                        consumerProguardFiles("proguard-rules.pro")
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Задача для проверки всех модулей
@@ -35,3 +47,4 @@ tasks.register("detektAll") {
     group = "verification"
     dependsOn(subprojects.map { "${it.path}:detekt" })
 }
+
