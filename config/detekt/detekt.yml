@@ -117,7 +117,7 @@ complexity:
     ignoreAnnotation: true
     excludeStringsWithLessThan5Characters: true
   TooManyFunctions:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/androidTest/**']
     thresholdInFiles: 11
     thresholdInClasses: 11

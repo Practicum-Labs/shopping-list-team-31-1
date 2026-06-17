@@ -22,15 +22,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ru.practicum.android.projectmonth.shoppinglist.R
 import ru.practicum.android.projectmonth.shoppinglist.domain.models.AppIcon
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.BottomSheetPeach
-import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 import ru.practicum.android.projectmonth.shoppinglist.ui.theme.DarkText
+import ru.practicum.android.projectmonth.shoppinglist.ui.theme.LightBrownElements
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

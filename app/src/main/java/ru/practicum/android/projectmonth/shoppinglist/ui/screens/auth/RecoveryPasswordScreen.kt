@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,7 +59,6 @@ fun RecoveryPasswordScreen(
             Toast.makeText(
                 context,
                 stringResource(R.string.recovery_password_success, email),
-//                (state as UiSecurityState.Success).msg,
                 Toast.LENGTH_LONG
             ).show()
 
@@ -76,28 +76,41 @@ fun RecoveryPasswordScreen(
 
     Box(
         modifier = Modifier.fillMaxHeight(),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.TopCenter,
     ) {
-        Image(
-            painter = painterResource(R.drawable.img_fogot_passwd),
-            contentDescription = null,
-            modifier = Modifier.padding(top = 236.dp)
-        )
-
         Column(
-            modifier = Modifier
-                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             MainScreenTitle()
+            Text(
+                text = "Восстановление пароля",
+                fontFamily = YsDisplayRegular,
+                fontStyle = FontStyle.Italic
+            )
+
+        }
+
+
+        Image(
+            painter = painterResource(R.drawable.img_fogot_passwd),
+            contentDescription = null,
+            modifier = Modifier.padding(top = 120.dp)
+        )
+
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp).padding(top = 120.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(280.dp))
             CustomTextInput(
                 value = email,
                 onValueChange = {
                     email = it
                 },
 
-                labelResId = R.string.email,
+                labelResId = R.string.email_4_recovery,
                 placeholderResId = R.string.enter_email,
                 modifier = Modifier.fillMaxWidth(),
                 includeClearIcon = true

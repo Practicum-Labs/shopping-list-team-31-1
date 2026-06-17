@@ -9,3 +9,6 @@
 .cxx
 local.properties
 /.idea/
+/keystore.properties
+/my-release-key.jks
+/stacktrace.txt
